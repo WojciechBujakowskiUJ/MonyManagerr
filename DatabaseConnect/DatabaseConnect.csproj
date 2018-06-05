@@ -66,6 +66,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.Config" />
+    <None Include="database.config.dist" />
+    <None Include="database.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

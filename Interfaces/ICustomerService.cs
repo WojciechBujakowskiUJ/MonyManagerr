@@ -8,7 +8,7 @@ namespace Interfaces
     {
         int Save(ICustomer customer);
         ICustomer GetCustomerById(int id);
-        List<ICustomer> GetCustomers(ICustomerFilter filter);
+        IList<ICustomer> GetCustomers(ICustomerFilter filter);
         void Delete(int id);
     }
 }

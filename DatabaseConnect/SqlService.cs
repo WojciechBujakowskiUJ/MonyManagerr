@@ -18,6 +18,7 @@ namespace DatabaseConnect
         {
             return GetDataTable(query.GetSql, query.GetParams);
         }
+
         public static DataTable GetDataTable(string query, SqlParameter[] parametrs)
         {
             DataTable t1 = new DataTable();
@@ -32,8 +33,8 @@ namespace DatabaseConnect
                 }
             }
             return t1;
-
         }
+
         public static int ExecuteScalar(string query, SqlParameter[] parametrs)
         {
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -44,6 +45,7 @@ namespace DatabaseConnect
                 return (int)cmd.ExecuteScalar();
             }
         }
+
         public static void ExecuteNonQuery(string query, SqlParameter[] parametrs)
         {
             using (SqlConnection conn = new SqlConnection(ConnectionString))
@@ -56,6 +58,5 @@ namespace DatabaseConnect
         }
 
     }
-
 
 }

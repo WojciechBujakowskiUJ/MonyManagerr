@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Interfaces
 {
-    public class TransactionFilter
+    public class TransactionFilter : ITransactionFilter
     {
         public int? Id { get; set; }
         public string Name { get; set; }

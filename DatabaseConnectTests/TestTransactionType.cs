@@ -7,11 +7,12 @@ namespace DatabaseConnect
     [TestFixture]
     public class TestTransactionType
     {
+
         [Test]
         public void TestInsert()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
+            databaseService.ConnectionString = DbTestUtils.ConnectionString;
             int cusId = databaseService.TransactionTypeService.Save( new TransactionType() { Name = "test2" ,Description= "sad",Color = "Zielony"});
             var cus = databaseService.TransactionTypeService.GetTransactionTypeById(cusId);
             Assert.AreEqual("test2", cus.Name);
@@ -23,8 +24,8 @@ namespace DatabaseConnect
         public void TestUpdate()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
-            int cusId = databaseService.TransactionTypeService.Save(new TransactionType() {Id=3, Name = "test2222", Description = "sad", Color = "Zielony" });
+            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            int cusId = databaseService.TransactionTypeService.Save(new TransactionType() { Name = "test2222", Description = "sad", Color = "Zielony" });
             var cus = databaseService.TransactionTypeService.GetTransactionTypeById(cusId);
             Assert.AreEqual("test2222", cus.Name);
         }
@@ -33,8 +34,8 @@ namespace DatabaseConnect
         public void TestSelect()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
-            int cusId = databaseService.TransactionTypeService.Save(new TransactionType() { Id = 3, Name = "test2222", Description = "sad", Color = "Zielony" });
+            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            int cusId = databaseService.TransactionTypeService.Save(new TransactionType() { Name = "test2222", Description = "sad", Color = "Zielony" });
             var cus = databaseService.TransactionTypeService.GetTransactionTypeById(cusId);
             Assert.AreEqual("test2222", cus.Name);
         }
@@ -44,14 +45,21 @@ namespace DatabaseConnect
         public void TestDelete()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
-            int cusId = databaseService.TransactionTypeService.Save(new TransactionType() { Id = 3, Name = "test2222", Description = "sad", Color = "Zielony" });
+            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            int cusId = databaseService.TransactionTypeService.Save(new TransactionType() { Name = "test2222", Description = "sad", Color = "Zielony" });
             var cus = databaseService.TransactionTypeService.GetTransactionTypeById(cusId);
             Assert.AreEqual("test2222", cus.Name);
             databaseService.TransactionTypeService.Delete(cusId);
             var cusAfterDelete = databaseService.TransactionTypeService.GetTransactionTypeById(cusId);
             Assert.AreEqual(null, cusAfterDelete);
         }
+
+        [TearDown]
+        public void TearDown()
+        {
+            DbTestUtils.ClearTables("TransactionType");
+        }
+
     }
 }
 

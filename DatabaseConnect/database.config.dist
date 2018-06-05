@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<connectionStrings>
+  <add name="TestEntities" connectionString="Data Source=.\SQLEXPRESS;Initial Catalog=mmgr_test;Integrated Security=True" providerName="System.Data.SqlClient" />
+  <!--add name="TestEntities" connectionString="metadata=res://*/Model.csdl|res://*/Model.ssdl|res://*/Model.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=SYLWIA\SQLEXPRESS;initial catalog=Test;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" /-->
+</connectionStrings>

@@ -11,7 +11,7 @@ namespace Interfaces
         decimal Value { get; set; }
         int TransactionTypeId { get; set; }
         string Description { get; set; }
-        Nullable<int> CustomerId { get; set; }
+        int? CustomerId { get; set; }
         DateTime Date { get; set; }
     }
 }

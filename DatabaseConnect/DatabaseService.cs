@@ -25,12 +25,12 @@ namespace DatabaseConnect
             get
             {
                 if (_transactionTypeService == null)
+                {
                     _transactionTypeService = new TransactionTypeService();
+                }
                 return _transactionTypeService;
             }
         }
-
-
 
         private ITransactionService _transactionService;
         public ITransactionService TransactionService
@@ -38,12 +38,12 @@ namespace DatabaseConnect
             get
             {
                 if (_transactionService == null)
+                {
                     _transactionService = new TransactionService();
+                }
                 return _transactionService;
             }
         }
-
-
 
         private ICustomerService _customerService;
         public ICustomerService CustomerService
@@ -51,7 +51,9 @@ namespace DatabaseConnect
             get
             {
                 if (_customerService == null)
+                {
                     _customerService = new CustomerService();
+                }
                 return _customerService;
             }
         }

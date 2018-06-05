@@ -8,7 +8,7 @@ namespace Interfaces
     {
         int Save(ITransaction transaction);
         ITransaction GetTransactionById(int id);
-        List<ITransaction> GetTransactions(ITransactionFilter filter);
+        IList<ITransaction> GetTransactions(ITransactionFilter filter);
         void Delete(int id);
     }
 }

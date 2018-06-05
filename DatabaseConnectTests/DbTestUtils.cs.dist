@@ -1,0 +1,40 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DatabaseConnectTests
+{
+    static class ConnectionStringProvider
+    {
+        internal static string TestCS 
+        {
+            get
+            {
+                return @"Data Source=.\SQLEXPRESS;Initial Catalog=mmgr_test;Integrated Security=True";
+                //return @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
+            }
+        }
+
+        internal static void ClearTables(params string[] tableNames)
+        {
+            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            {
+                conn.Open();
+
+                foreach (string tableName in tableNames)
+                {
+                    SqlCommand cmd = new SqlCommand(GetTableClearCommandString(tableName), conn);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        private static string GetTableClearCommandString(string tableName)
+        {
+            return string.Format("DELETE FROM [{0}];", tableName);
+        }
+
+    }
+}

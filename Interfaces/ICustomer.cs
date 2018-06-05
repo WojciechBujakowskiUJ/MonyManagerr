@@ -10,6 +10,6 @@ namespace Interfaces
         string Name { get; set; }
         string Description { get; set; }
         bool Active { get; set; }
-        Nullable<int> DefaultTransactionTypeId { get; set; }
+        int? DefaultTransactionTypeId { get; set; }
     }
 }

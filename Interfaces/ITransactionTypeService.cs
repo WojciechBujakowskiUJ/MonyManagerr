@@ -9,7 +9,7 @@ namespace Interfaces
 
         int Save(ITransactionType transactionType);
         ITransactionType GetTransactionTypeById(int id);
-        List<ITransactionType> GetTransactionTypes(TransactionTypeFilter filter);
+        IList<ITransactionType> GetTransactionTypes(ITransactionTypeFilter filter);
         void Delete(int id);
     }
 }

@@ -11,9 +11,39 @@ namespace DatabaseConnect
     {
         public string Select { get; set; }
         public string From { get; set; }
-        public List<SqlWhere> Where = new List<SqlWhere>();
-        public string GetSql { get { return Select + From + (Where.Any() ? " WHERE " : "") + string.Join(" AND ", Where.Select(x => x.Where)); } }
-        public SqlParameter[] GetParams { get {return Where.Select(x => x.Param).ToArray(); } }
+
+        private IList<SqlWhere> _where;
+        public IList<SqlWhere> Where 
+        {
+            get 
+            {
+                if (_where == null)
+                {
+                    _where = new List<SqlWhere>();
+                }
+                return _where;
+            }
+            set 
+            {
+                _where = value;
+            }
+        }
+
+        public string GetSql
+        {
+            get
+            {
+                return Select + From + ( Where.Any() ? " WHERE " : "" ) + string.Join(" AND ", Where.Select(x => x.Where));
+            }
+        }
+
+        public SqlParameter[] GetParams 
+        {
+            get
+            {
+                return Where.Select(x => x.Param).ToArray();
+            }
+        }
 
     }
 }

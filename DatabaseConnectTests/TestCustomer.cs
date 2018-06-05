@@ -11,7 +11,7 @@ namespace DatabaseConnect
         public void TestInsert()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
+            databaseService.ConnectionString = DbTestUtils.ConnectionString;
             int cusId = databaseService.CustomerService.Save( new Customer() { Name = "test2" ,Description= "sad"});
             var cus = databaseService.CustomerService.GetCustomerById(cusId);
             Assert.AreEqual("test2", cus.Name);
@@ -23,8 +23,9 @@ namespace DatabaseConnect
         public void TestUpdate()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
-            int cusId = databaseService.CustomerService.Save(new Customer() {Id=12, Name = "test2222", Description = "sad" });
+            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            int cusId = databaseService.CustomerService.Save(new Customer() { Name = "test222", Description = "sad" });
+            cusId = databaseService.CustomerService.Save(new Customer() { Id = cusId, Name = "test2222", Description = "sad" });
             var cus = databaseService.CustomerService.GetCustomerById(cusId);
             Assert.AreEqual("test2222", cus.Name);
         }
@@ -33,8 +34,8 @@ namespace DatabaseConnect
         public void TestSelect()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
-            int cusId = databaseService.CustomerService.Save(new Customer() { Id = 12, Name = "test2222", Description = "sad" });
+            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            int cusId = databaseService.CustomerService.Save(new Customer() { Name = "test2222", Description = "sad" });
             var cus = databaseService.CustomerService.GetCustomerById(cusId);
             Assert.AreEqual("test2222", cus.Name);
         }
@@ -44,13 +45,19 @@ namespace DatabaseConnect
         public void TestDelete()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
-            int cusId = databaseService.CustomerService.Save(new Customer() { Id = 12, Name = "test2222", Description = "sad" });
+            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            int cusId = databaseService.CustomerService.Save(new Customer() { Name = "test2222", Description = "sad" });
             var cus = databaseService.CustomerService.GetCustomerById(cusId);
             Assert.AreEqual("test2222", cus.Name);
             databaseService.CustomerService.Delete(cusId);
             var cusAfterDelete = databaseService.CustomerService.GetCustomerById(cusId);
             Assert.AreEqual(null, cusAfterDelete);
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            DbTestUtils.ClearTables("Customer");
         }
     }
 }

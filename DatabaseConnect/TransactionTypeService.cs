@@ -16,9 +16,8 @@ namespace DatabaseConnect
             return GetTransactionTypes(new TransactionTypeFilter() { Id = id }).FirstOrDefault();
         }
 
-        public List<ITransactionType> GetTransactionTypes(TransactionTypeFilter filter)
+        public IList<ITransactionType> GetTransactionTypes(ITransactionTypeFilter filter)
         {
-
             SqlQueryBuilder sqlQueryBuilder = new SqlQueryBuilder();
             sqlQueryBuilder.Select = " SELECT * ";
             sqlQueryBuilder.From = " FROM [dbo].[TransactionType] ";
@@ -30,7 +29,6 @@ namespace DatabaseConnect
             {
                 sqlQueryBuilder.Where.Add(new SqlWhere() { Where = "Income = @Income", Param = new SqlParameter("@Income", filter.Income.Value) });
             }
-
             if (!string.IsNullOrWhiteSpace(filter.Color))
             {
                 sqlQueryBuilder.Where.Add(new SqlWhere() { Where = "Color = @Color", Param = new SqlParameter("@Color", filter.Color) });
@@ -42,11 +40,7 @@ namespace DatabaseConnect
             var table = SqlService.GetDataTable(sqlQueryBuilder);
             var myEnumerable = table.AsEnumerable();
 
-
-
-            return (from item in myEnumerable
-                    select new TransactionType
-                    {
+            return ( from item in myEnumerable select new TransactionType {
                         Income = item.Field<bool>("Income"),
                         Color = item.Field<string>("Color"),
                         Name = item.Field<string>("Name"),
@@ -57,17 +51,16 @@ namespace DatabaseConnect
 
         public void Delete(int id)
         {
-            String query = @" DELETE FROM [dbo].[TransactionType]  WHERE Id = @Id";
-            List<SqlParameter> sqlParameterCollection = new List<SqlParameter>();
+            string query = @" DELETE FROM [dbo].[TransactionType] WHERE Id = @Id";
+            IList<SqlParameter> sqlParameterCollection = new List<SqlParameter>();
             sqlParameterCollection.Add(new SqlParameter("@Id", id));
             SqlService.ExecuteNonQuery(query, sqlParameterCollection.ToArray());
-
         }
 
 
         public int Save(ITransactionType transactionType)
         {
-            String query = @"INSERT INTO [dbo].[TransactionType]
+            string query = @"INSERT INTO [dbo].[TransactionType]
          
            ([Name]
            ,[Description]
@@ -91,28 +84,38 @@ namespace DatabaseConnect
 
             }
 
-            List<SqlParameter> sqlParameterCollection = new List<SqlParameter>();
+            IList<SqlParameter> sqlParameterCollection = new List<SqlParameter>();
 
             sqlParameterCollection.Add(new SqlParameter("@Income", transactionType.Income));
 
             if (string.IsNullOrWhiteSpace(transactionType.Description))
+            {
                 sqlParameterCollection.Add(new SqlParameter("@Description", DBNull.Value));
+            }
             else
+            {
                 sqlParameterCollection.Add(new SqlParameter("@Description", transactionType.Description));
+            }
 
 
 
             if (string.IsNullOrWhiteSpace(transactionType.Name))
+            {
                 sqlParameterCollection.Add(new SqlParameter("@Name", DBNull.Value));
+            }
             else
+            {
                 sqlParameterCollection.Add(new SqlParameter("@Name", transactionType.Name));
+            }
 
             if (string.IsNullOrWhiteSpace(transactionType.Color))
+            {
                 sqlParameterCollection.Add(new SqlParameter("@Color", DBNull.Value));
+            }
             else
+            {
                 sqlParameterCollection.Add(new SqlParameter("@Color", transactionType.Color));
-
-
+            }
 
             if (transactionType.Id != 0)
             {
@@ -122,7 +125,6 @@ namespace DatabaseConnect
             }
             else
             {
-
                 return SqlService.ExecuteScalar(query, sqlParameterCollection.ToArray());
             }
         }
