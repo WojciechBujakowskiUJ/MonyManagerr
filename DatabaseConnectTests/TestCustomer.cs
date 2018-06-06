@@ -11,7 +11,7 @@ namespace DatabaseConnect
         public void TestInsert()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            databaseService.ConnectionString = ConnectionStringsProvider.GetTest();
             int cusId = databaseService.CustomerService.Save( new Customer() { Name = "test2" ,Description= "sad"});
             var cus = databaseService.CustomerService.GetCustomerById(cusId);
             Assert.AreEqual("test2", cus.Name);
@@ -23,7 +23,7 @@ namespace DatabaseConnect
         public void TestUpdate()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            databaseService.ConnectionString = ConnectionStringsProvider.GetTest();
             int cusId = databaseService.CustomerService.Save(new Customer() { Name = "test222", Description = "sad" });
             cusId = databaseService.CustomerService.Save(new Customer() { Id = cusId, Name = "test2222", Description = "sad" });
             var cus = databaseService.CustomerService.GetCustomerById(cusId);
@@ -34,7 +34,7 @@ namespace DatabaseConnect
         public void TestSelect()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            databaseService.ConnectionString = ConnectionStringsProvider.GetTest();
             int cusId = databaseService.CustomerService.Save(new Customer() { Name = "test2222", Description = "sad" });
             var cus = databaseService.CustomerService.GetCustomerById(cusId);
             Assert.AreEqual("test2222", cus.Name);
@@ -45,7 +45,7 @@ namespace DatabaseConnect
         public void TestDelete()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            databaseService.ConnectionString = ConnectionStringsProvider.GetTest();
             int cusId = databaseService.CustomerService.Save(new Customer() { Name = "test2222", Description = "sad" });
             var cus = databaseService.CustomerService.GetCustomerById(cusId);
             Assert.AreEqual("test2222", cus.Name);

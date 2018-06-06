@@ -12,7 +12,7 @@ namespace DatabaseConnect
         public void TestInsert()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            databaseService.ConnectionString = ConnectionStringsProvider.GetTest();
             int cusId = databaseService.TransactionTypeService.Save( new TransactionType() { Name = "test2" ,Description= "sad",Color = "Zielony"});
             var cus = databaseService.TransactionTypeService.GetTransactionTypeById(cusId);
             Assert.AreEqual("test2", cus.Name);
@@ -24,7 +24,7 @@ namespace DatabaseConnect
         public void TestUpdate()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            databaseService.ConnectionString = ConnectionStringsProvider.GetTest();
             int cusId = databaseService.TransactionTypeService.Save(new TransactionType() { Name = "test2222", Description = "sad", Color = "Zielony" });
             var cus = databaseService.TransactionTypeService.GetTransactionTypeById(cusId);
             Assert.AreEqual("test2222", cus.Name);
@@ -34,7 +34,7 @@ namespace DatabaseConnect
         public void TestSelect()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            databaseService.ConnectionString = ConnectionStringsProvider.GetTest();
             int cusId = databaseService.TransactionTypeService.Save(new TransactionType() { Name = "test2222", Description = "sad", Color = "Zielony" });
             var cus = databaseService.TransactionTypeService.GetTransactionTypeById(cusId);
             Assert.AreEqual("test2222", cus.Name);
@@ -45,7 +45,7 @@ namespace DatabaseConnect
         public void TestDelete()
         {
             IDatabaseService databaseService = new DatabaseService();
-            databaseService.ConnectionString = DbTestUtils.ConnectionString;
+            databaseService.ConnectionString = ConnectionStringsProvider.GetTest();
             int cusId = databaseService.TransactionTypeService.Save(new TransactionType() { Name = "test2222", Description = "sad", Color = "Zielony" });
             var cus = databaseService.TransactionTypeService.GetTransactionTypeById(cusId);
             Assert.AreEqual("test2222", cus.Name);

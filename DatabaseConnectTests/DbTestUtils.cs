@@ -1,25 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DatabaseConnectTests
+namespace DatabaseConnect
 {
-    static class ConnectionStringProvider
+    static class DbTestUtils
     {
-        internal static string TestCS 
-        {
-            get
-            {
-                return @"Data Source=.\SQLEXPRESS;Initial Catalog=mmgr_test;Integrated Security=True";
-                //return @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
-            }
-        }
-
         internal static void ClearTables(params string[] tableNames)
         {
-            using (SqlConnection conn = new SqlConnection(ConnectionString))
+            using (SqlConnection conn = new SqlConnection(ConnectionStringsProvider.GetTest()))
             {
                 conn.Open();
 
@@ -35,6 +27,5 @@ namespace DatabaseConnectTests
         {
             return string.Format("DELETE FROM [{0}];", tableName);
         }
-
     }
 }

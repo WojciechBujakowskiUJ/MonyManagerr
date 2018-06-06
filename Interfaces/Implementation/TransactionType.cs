@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Interfaces
 {
-    public class TransactionType: ITransactionType
+    public class TransactionType : ITransactionType
     {
         public int Id { get; set; }
         public string Name { get; set; }

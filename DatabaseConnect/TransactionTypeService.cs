@@ -5,6 +5,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DatabaseConnect
 {
@@ -14,6 +15,11 @@ namespace DatabaseConnect
         public ITransactionType GetTransactionTypeById(int id)
         {
             return GetTransactionTypes(new TransactionTypeFilter() { Id = id }).FirstOrDefault();
+        }
+
+        public IList<ITransactionType> GetTransactionTypes()
+        {
+            return GetTransactionTypes(new TransactionTypeFilter());
         }
 
         public IList<ITransactionType> GetTransactionTypes(ITransactionTypeFilter filter)
@@ -128,6 +134,51 @@ namespace DatabaseConnect
                 return SqlService.ExecuteScalar(query, sqlParameterCollection.ToArray());
             }
         }
+
+        #region Async
+
+        public Task<int> SaveAsync(ITransactionType transactionType)
+        {
+            return Task.Factory.StartNew<int>(() => 
+            {
+                return Save(transactionType);
+            });
+        }
+
+        public Task<ITransactionType> GetTransactionTypeByIdAsync(int id)
+        {
+            return Task.Factory.StartNew<ITransactionType>(() => 
+            {
+                return GetTransactionTypeById(id);
+            });
+        }
+
+        public Task<IList<ITransactionType>> GetTransactionTypesAsync()
+        {
+            return Task.Factory.StartNew<IList<ITransactionType>>(() =>
+            {
+                return GetTransactionTypes();
+            });
+        }
+
+        public Task<IList<ITransactionType>> GetTransactionTypesAsync(ITransactionTypeFilter filter)
+        {
+            return Task.Factory.StartNew<IList<ITransactionType>>(() =>
+            {
+                return GetTransactionTypes(filter);
+            });
+        }
+
+        public Task DeleteAsync(int id)
+        {
+            return Task.Factory.StartNew(() => 
+            {
+                Delete(id);
+            });
+        }
+
+
+        #endregion
 
     }
 }

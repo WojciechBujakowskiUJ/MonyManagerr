@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DatabaseConnect
+{
+    public static class ConnectionStringsProvider
+    {
+        public static string Get()
+        {
+            return @"Data Source=.\SQLEXPRESS;Initial Catalog=mmgr_1;Integrated Security=True";
+            //return @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
+        }
+
+        public static string GetTest()
+        {
+            return @"Data Source=.\SQLEXPRESS;Initial Catalog=mmgr_test;Integrated Security=True";
+            //return @"Data Source=SYLWIA\SQLEXPRESS;Initial Catalog=Test;Integrated Security=SSPI;";
+        }
+    }
+}

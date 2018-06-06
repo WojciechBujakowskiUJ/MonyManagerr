@@ -55,6 +55,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ConnectionStringProvider.cs.dist" />
+    <Compile Include="ConnectionStringProvider.cs" />
     <Compile Include="CustomerService.cs" />
     <Compile Include="DatabaseService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
