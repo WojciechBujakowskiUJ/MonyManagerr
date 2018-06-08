@@ -11,23 +11,23 @@ namespace ClientApp.Helpers.Converters
 {
     public class CustomHeightConverter : IValueConverter
     {
+        public const double MIN_GRID_PANEL_HEIGHT = 110.0;
+
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            double height;
-            double paramValue;
-
-            if (double.TryParse(value.ToString(), out height))
+            if (double.TryParse(value.ToString(), out double height))
             {
-                if (double.TryParse(parameter.ToString(), out paramValue))
+                if (double.TryParse(parameter.ToString(), out double paramValue))
                 {
-                    return height - paramValue;
+                    double result = height - paramValue;
+                    return result > MIN_GRID_PANEL_HEIGHT ? result : MIN_GRID_PANEL_HEIGHT;
                 }
                 else
                 {
-                    return 200;
+                    return MIN_GRID_PANEL_HEIGHT;
                 }
             }
-            return 200;
+            return MIN_GRID_PANEL_HEIGHT;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

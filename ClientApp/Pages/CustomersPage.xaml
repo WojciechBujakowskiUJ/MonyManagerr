@@ -8,7 +8,8 @@
       xmlns:local="clr-namespace:ClientApp.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      IsEnabled="{Binding AllowInput}">
+      IsEnabled="{Binding AllowInput}"
+      x:Name="CPage">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -21,7 +22,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="{Binding ElementName=TPMainGrid, Path=ActualHeight, Converter={StaticResource CustomHeightConverter}, ConverterParameter=280}"/>
+                <RowDefinition Height="{Binding ElementName=CPage, Path=ActualHeight, Converter={StaticResource CustomHeightConverter}, ConverterParameter=280}"/>
                 <RowDefinition Height="180"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>

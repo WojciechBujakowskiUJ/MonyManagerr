@@ -8,7 +8,8 @@
       xmlns:local="clr-namespace:ClientApp.Pages"
       mc:Ignorable="d"
       d:DesignHeight="450" d:DesignWidth="800"
-      IsEnabled="{Binding AllowInput}">
+      IsEnabled="{Binding AllowInput}"
+      x:Name="TPage">
 
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
@@ -21,7 +22,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="100"/>
-                <RowDefinition Height="{Binding ElementName=TPMainGrid, Path=ActualHeight, Converter={StaticResource CustomHeightConverter}, ConverterParameter=380}" />
+                <RowDefinition Height="{Binding ElementName=TPage, Path=ActualHeight, Converter={StaticResource CustomHeightConverter}, ConverterParameter=380}" />
                 <RowDefinition Height="230"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -108,9 +109,9 @@
                         <ColumnDefinition Width=".15*"/>
                         <ColumnDefinition Width=".10*"/>
                         <ColumnDefinition Width=".20*"/>
+                        <ColumnDefinition Width=".25*"/>
                         <ColumnDefinition Width=".20*"/>
-                        <ColumnDefinition Width=".20*"/>
-                        <ColumnDefinition Width=".15*"/>
+                        <ColumnDefinition Width=".10*"/>
                     </Grid.ColumnDefinitions>
 
                     <DataGrid x:Name="TransactionsGrid"
@@ -139,18 +140,18 @@
                                 </DataGridTextColumn.CellStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Binding="{Binding Path=Date}" Header="Date" Width=".20*"/>
-                            <DataGridTemplateColumn Header="Type" Width=".20*">
+                            <DataGridTemplateColumn Header="Type" Width=".25*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal" Height="20">
-                                            <Border Margin="2,0" Width="30" Height="19" CornerRadius="2" BorderThickness="1" BorderBrush="Black" Background="{Binding Path=TransactionType.Color, Converter={StaticResource HexToBrushConverter}}"/>
+                                            <Border Margin="2,0" Width="50" Height="19" CornerRadius="2" BorderThickness="1" BorderBrush="Black" Background="{Binding Path=TransactionType.Color, Converter={StaticResource HexToBrushConverter}}"/>
                                             <TextBlock Height="20" Margin="5,2,0,0" Text="{Binding Path=TransactionType, Converter={StaticResource DttToNameConverter}}" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
                             <DataGridTextColumn Binding="{Binding Path=Customer, Converter={StaticResource CustomerToNameConverter}}" Header="Customer" Width=".20*"/>
-                            <DataGridTemplateColumn Header="Description" Width=".15*">
+                            <DataGridTemplateColumn Header="Description" Width=".10*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <TextBlock Margin="3,0,0,0" Text="{Binding Path=Description}" TextTrimming="CharacterEllipsis"/>
@@ -161,7 +162,7 @@
                     </DataGrid>
 
                     <ex:WatermarkTextBox Grid.Row="1" Grid.Column="0" Text="{Binding FilterName, UpdateSourceTrigger=PropertyChanged}" Watermark="Filter by Name" Padding="3, 1" BorderBrush="Gray" BorderThickness="1, 0, 1, 1" />
-                    <ex:WatermarkTextBox Grid.Row="1" Grid.Column="5" Text="{Binding FilterDescription, UpdateSourceTrigger=PropertyChanged}" Watermark="Filter by Description" Padding="3, 1" BorderBrush="Gray" BorderThickness="1, 0, 1, 1" />
+                    <ex:WatermarkTextBox Grid.Row="1" Grid.Column="4" Grid.ColumnSpan="2" Text="{Binding FilterDescription, UpdateSourceTrigger=PropertyChanged}" Watermark="Filter by Description" Padding="3, 1" BorderBrush="Gray" BorderThickness="1, 0, 1, 1" />
 
                 </Grid>
             </Border>
@@ -175,8 +176,8 @@
                         <RowDefinition Height="50" />
                         <RowDefinition Height="30" />
                         <RowDefinition Height="30" />
-                        <RowDefinition Height="33" />
                         <RowDefinition Height="27" />
+                        <RowDefinition Height="33" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width=".15*"/>
@@ -185,7 +186,7 @@
                         <ColumnDefinition Width=".25*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="4" BorderThickness="1" BorderBrush="LightGray">
+                    <Border Grid.Row="0" Grid.Column="0" Grid.RowSpan="6" BorderThickness="1" BorderBrush="LightGray">
                         <Label Style="{StaticResource BigContextStyle}" Content="{Binding EditorLabel}"/>
                     </Border>
 
@@ -202,8 +203,8 @@
                     <Label Grid.Row="3" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" Content="Date*"/>
                     <ex:DateTimePicker Grid.Row="3" Grid.Column="2" Margin="0,5,0,0" Value="{Binding Date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Label Grid.Row="4" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Right" Content="Type*"/>
-                    <ComboBox Grid.Row="4" Grid.Column="2" Margin="0,5,0,0" VerticalAlignment="Center" ItemsSource="{Binding TransactionTypeOptions}"
+                    <Label Grid.Row="5" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Right" Content="Type*"/>
+                    <ComboBox Grid.Row="5" Grid.Column="2" Margin="0,5,0,0" VerticalAlignment="Center" ItemsSource="{Binding TransactionTypeOptions}"
                               SelectedItem="{Binding TransactionType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{StaticResource ErrorComboBox}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
@@ -215,8 +216,8 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-                    <Label Grid.Row="5" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Right" Content="Customer"/>
-                    <ComboBox Grid.Row="5" Grid.Column="2" Margin="0,5,0,0" VerticalAlignment="Center" ItemsSource="{Binding CustomerOptions}"
+                    <Label Grid.Row="4" Grid.Column="1" Margin="0,0,5,0" HorizontalAlignment="Right" VerticalAlignment="Center" HorizontalContentAlignment="Right" Content="Customer"/>
+                    <ComboBox Grid.Row="4" Grid.Column="2" Margin="0,5,0,0" VerticalAlignment="Center" ItemsSource="{Binding CustomerOptions}"
                               SelectedItem="{Binding Customer, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Style="{StaticResource ErrorComboBox}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>

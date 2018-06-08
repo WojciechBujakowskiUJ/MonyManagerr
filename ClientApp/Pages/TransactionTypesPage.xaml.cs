@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -282,7 +283,7 @@ namespace ClientApp.Pages
 
         #endregion
 
-        #region Command
+        #region Commands
 
         private ICommand _saveCommand;
         public ICommand SaveCommand
@@ -338,14 +339,30 @@ namespace ClientApp.Pages
 
         protected async override void OnLoad()
         {
-            IDatabaseService dbconn = new DatabaseService();
-            dbconn.ConnectionString = ConnectionStringsProvider.Get();
+            try
+            {
+                IDatabaseService dbconn = new DatabaseService();
+                dbconn.ConnectionString = ConnectionStringsProvider.Get();
 
-            var transactionTypesRaw = await dbconn.TransactionTypeService.GetTransactionTypesAsync();
-            TransactionTypes = new ObservableCollection<ITransactionType>(transactionTypesRaw);
+                var transactionTypesRaw = await dbconn.TransactionTypeService.GetTransactionTypesAsync();
+                TransactionTypes = new ObservableCollection<ITransactionType>(transactionTypesRaw);
 
-            ReloadEditor();
-            base.OnLoad();
+                ReloadEditor();
+                base.OnLoad();
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Unexpected SQL error occurred while accessing database. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unexpected error occurred while accessing database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                AllowInput = true;
+            }
+
         }
 
         private void ReloadEditor()
@@ -390,14 +407,19 @@ namespace ClientApp.Pages
                 TransactionType = TransactionTypes.Where(tt => tt.Id == newId).FirstOrDefault();
                 ReloadEditor();
             }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Unexpected SQL error occurred while saving entry in database. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             catch (Exception)
             {
-                MessageBox.Show("Error", "Unexpected error occurred while saving entry in database", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Unexpected error occurred while saving entry in database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
                 AllowInput = true;
             }
+
         }
 
         private async void Delete()
@@ -414,14 +436,23 @@ namespace ClientApp.Pages
                 TransactionType = null;
                 ReloadEditor();
             }
+            catch (SqlException e) when (e.ToString().Contains("REFERENCE") && e.ToString().Contains("FK_"))
+            {
+                MessageBox.Show("Selected Transaction Type cannot be deleted.\n\nThere are either Transactions or Customers that refer to it.", "Database constraint notice", MessageBoxButton.OK, MessageBoxImage.Hand);
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Unexpected SQL error occurred while deleting entry in database. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             catch (Exception)
             {
-                MessageBox.Show("Error", "Unexpected error occurred while deleting entry in database", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Unexpected error occurred while deleting entry in database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
                 AllowInput = true;
             }
+
         }
 
         #endregion

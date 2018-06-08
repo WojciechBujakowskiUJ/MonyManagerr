@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -450,6 +451,11 @@ namespace ClientApp.Pages
                 {
                     _customer = value;
                     RaisePropertyChanged("Customer");
+
+                    if (_customer != null && _customer.DefaultTransactionTypeId.HasValue)
+                    {
+                        TransactionType = TransactionTypeOptions.Where(tt => tt.Id == _customer.DefaultTransactionTypeId.Value).FirstOrDefault();
+                    }
                 }
             }
         }
@@ -613,26 +619,44 @@ namespace ClientApp.Pages
 
         protected async override void OnLoad()
         {
-            IDatabaseService dbconn = new DatabaseService();
-            dbconn.ConnectionString = ConnectionStringsProvider.Get();
+            AllowInput = false;
 
-            TransactionTypeOptions = await dbconn.TransactionTypeService.GetTransactionTypesAsync();
-            CustomerOptions = await dbconn.CustomerService.GetCustomersAsync();
+            try
+            {
+                IDatabaseService dbconn = new DatabaseService();
+                dbconn.ConnectionString = ConnectionStringsProvider.Get();
 
-            var transactionsRaw = await dbconn.TransactionService.GetTransactionsAsync();
-            Transactions = new ObservableCollection<ITransaction>(transactionsRaw);
+                TransactionTypeOptions = await dbconn.TransactionTypeService.GetTransactionTypesAsync();
+                CustomerOptions = await dbconn.CustomerService.GetCustomersAsync();
 
-            ReloadEditor();
+                var transactionsRaw = await dbconn.TransactionService.GetTransactionsAsync();
+                Transactions = new ObservableCollection<ITransaction>(transactionsRaw);
 
-            RaisePropertyChanged("TransactionTypeOptions");
-            RaisePropertyChanged("CustomerOptions");
+                ReloadEditor();
 
-            TransactionType = TransactionTypeOptions.FirstOrDefault();
-            FilterTransactionType = TransactionTypeOptions.FirstOrDefault();
-            Customer = CustomerOptions.FirstOrDefault();
-            FilterCustomer = CustomerOptions.FirstOrDefault();
+                RaisePropertyChanged("TransactionTypeOptions");
+                RaisePropertyChanged("CustomerOptions");
 
-            base.OnLoad();
+                TransactionType = TransactionTypeOptions.FirstOrDefault();
+                FilterTransactionType = TransactionTypeOptions.FirstOrDefault();
+                Customer = CustomerOptions.FirstOrDefault();
+                FilterCustomer = CustomerOptions.FirstOrDefault();
+
+                base.OnLoad();
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Unexpected SQL error occurred while accessing database. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unexpected error occurred while accessing database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                AllowInput = true;
+            }
+
         }
 
         private void ReloadEditor()
@@ -693,9 +717,13 @@ namespace ClientApp.Pages
 
                 ReloadEditor();
             }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Unexpected SQL error occurred while saving entry in database. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             catch (Exception)
             {
-                MessageBox.Show("Error", "Unexpected error occurred while saving entry in database", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Unexpected error occurred while saving entry in database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -721,9 +749,13 @@ namespace ClientApp.Pages
 
                 ReloadEditor();
             }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Unexpected SQL error occurred while deleting entry in database. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             catch (Exception)
             {
-                MessageBox.Show("Error", "Unexpected error occurred while deleting entry in database", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("Unexpected error occurred while deleting entry in database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
