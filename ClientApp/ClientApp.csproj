@@ -83,8 +83,13 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Helpers\ColorsDictionary.cs" />
+    <Compile Include="Helpers\Converters\CustomerToNameConverter.cs" />
+    <Compile Include="Helpers\Converters\CustomHeightConverter.cs" />
+    <Compile Include="Helpers\Converters\DttToNameConverter.cs" />
     <Compile Include="Helpers\Converters\HexToBrushConverter.cs" />
     <Compile Include="Helpers\Converters\HexToColorNameConverter.cs" />
+    <Compile Include="Helpers\Converters\ValueToBackgroundBrushConverter.cs" />
+    <Compile Include="Helpers\Converters\ValueToBrushConverter.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>

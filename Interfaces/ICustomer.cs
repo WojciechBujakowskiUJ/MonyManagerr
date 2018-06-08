@@ -11,5 +11,6 @@ namespace Interfaces
         string Description { get; set; }
         bool Active { get; set; }
         int? DefaultTransactionTypeId { get; set; }
+        ITransactionType DefaultTransactionType { get; set; }
     }
 }

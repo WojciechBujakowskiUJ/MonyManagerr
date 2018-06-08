@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Data.SqlClient;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace DatabaseConnect
 {
@@ -13,6 +14,11 @@ namespace DatabaseConnect
         public ITransaction GetTransactionById(int id)
         {
             return GetTransactions(new TransactionFilter() { Id = id }).FirstOrDefault();
+        }
+
+        public IList<ITransaction> GetTransactions()
+        {
+            return GetTransactions(new TransactionFilter());
         }
 
         public IList<ITransaction> GetTransactions(ITransactionFilter filter)
@@ -64,7 +70,7 @@ namespace DatabaseConnect
             var table = SqlService.GetDataTable(sqlQueryBuilder);
             var myEnumerable = table.AsEnumerable();
 
-            return (from item in myEnumerable select new Transaction {
+            var result = (from item in myEnumerable select new Transaction {
                         Id = item.Field<int>("Id"),
                         Name = item.Field<string>("Name"),
                         Description = item.Field<string>("Description"),
@@ -73,6 +79,23 @@ namespace DatabaseConnect
                         CustomerId = item.Field<int?>("CustomerId"),
                         Date = item.Field<DateTime>("Date")
             }).ToList<ITransaction>();
+
+            var ttService = new TransactionTypeService();
+            var tts = ttService.GetTransactionTypes();
+
+            var cService = new CustomerService();
+            var cs = cService.GetCustomers();
+
+            foreach (var trans in result)
+            {
+                trans.TransactionType = tts.Where(tt => tt.Id == trans.TransactionTypeId).FirstOrDefault();
+                if (trans.CustomerId.HasValue)
+                {
+                    trans.Customer = cs.Where(c => c.Id == trans.CustomerId.Value).FirstOrDefault();
+                }
+            }
+
+            return result;
         }
 
         public void Delete(int id)
@@ -104,7 +127,7 @@ namespace DatabaseConnect
 
             if (transaction.Id != 0)
             {
-                query = @"UPDATE [dbo].[TransactionType]
+                query = @"UPDATE [dbo].[Transaction]
                    SET [Name] = @Name
                       ,[Description] = @Description
                       ,[Value] = @Value
@@ -157,7 +180,47 @@ namespace DatabaseConnect
             {
                 return SqlService.ExecuteScalar(query, sqlParameterCollection.ToArray());
             }
-
         }
+
+        #region Async
+
+        public Task<int> SaveAsync(ITransaction transaction)
+        {
+            return Task.Factory.StartNew<int>(() => 
+            {
+                return Save(transaction);
+            });
+        }
+        public Task<ITransaction> GetTransactionByIdAsync(int id)
+        {
+            return Task.Factory.StartNew<ITransaction>(() =>
+            {
+                return GetTransactionById(id);
+            });
+        }
+        public Task<IList<ITransaction>> GetTransactionsAsync()
+        {
+            return Task.Factory.StartNew<IList<ITransaction>>(() =>
+            {
+                return GetTransactions();
+            });
+        }
+        public Task<IList<ITransaction>> GetTransactionsAsync(ITransactionFilter filter)
+        {
+            return Task.Factory.StartNew<IList<ITransaction>>(() =>
+            {
+                return GetTransactions(filter);
+            });
+        }
+        public Task DeleteAsync(int id)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                Delete(id);
+            });
+        }
+
+        #endregion
+
     }
 }

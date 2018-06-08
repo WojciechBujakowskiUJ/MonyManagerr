@@ -21,14 +21,13 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="50"/>
-                <RowDefinition Height="*"/>
+                <RowDefinition Height="{Binding ElementName=TPMainGrid, Path=ActualHeight, Converter={StaticResource CustomHeightConverter}, ConverterParameter=280}"/>
                 <RowDefinition Height="180"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            
-            
+
             <!-- TITLE LABEL -->
             <Border Grid.Row="0" Grid.Column="0" BorderThickness="1" BorderBrush="LightGray">
                 <Label Margin="5" Style="{StaticResource PageTitleStyle}" Content="TRANSACTION TYPES MANAGEMENT"/>

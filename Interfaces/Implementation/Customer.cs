@@ -10,6 +10,7 @@ namespace Interfaces.Implementation
         public string Name { get; set; }
         public string Description { get; set; }
         public bool Active { get; set; }
-        public Nullable<int> DefaultTransactionTypeId { get; set; }
+        public int? DefaultTransactionTypeId { get; set; }
+        public ITransactionType DefaultTransactionType { get; set; }
     }
 }

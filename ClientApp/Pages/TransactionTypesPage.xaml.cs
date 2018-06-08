@@ -23,6 +23,12 @@ namespace ClientApp.Pages
     public class TransactionTypesPageViewModel : AbstractPage
     {
 
+        #region Local Fields
+
+        private bool isColorBoxDirty = false;
+
+        #endregion
+
         #region Binding Properties
 
         private int _transactionTypeId;
@@ -93,7 +99,7 @@ namespace ClientApp.Pages
                     };
 
                     RaisePropertyChanged("TransactionTypesView");
-                    RaisePropertyChanged("TransactionTypeId");
+                    RaisePropertyChanged("TransactionType");
                 }
             }
         }
@@ -233,6 +239,8 @@ namespace ClientApp.Pages
                 {
                     _color = value;
                     RaisePropertyChanged("Color");
+
+                    isColorBoxDirty = true;
                 }
             }
         }
@@ -285,7 +293,7 @@ namespace ClientApp.Pages
                 {
                     _saveCommand = new RelayCommand<string>(
                         param => Save(),
-                        param => AllowInput && IsFormValid() && Name != null
+                        param => AllowInput && IsFormValid() && Name != null && Color != null
                     );
                 }
                 return _saveCommand;
@@ -332,8 +340,10 @@ namespace ClientApp.Pages
         {
             IDatabaseService dbconn = new DatabaseService();
             dbconn.ConnectionString = ConnectionStringsProvider.Get();
+
             var transactionTypesRaw = await dbconn.TransactionTypeService.GetTransactionTypesAsync();
             TransactionTypes = new ObservableCollection<ITransactionType>(transactionTypesRaw);
+
             ReloadEditor();
             base.OnLoad();
         }
@@ -354,6 +364,7 @@ namespace ClientApp.Pages
                 Color = ColorOptions.Where(kvp => (kvp.Value == null ? null : kvp.Value.ToString()) == TransactionType.Color).Select(kvp => kvp.Value).FirstOrDefault();
                 Income = TransactionType.Income;
             }
+            isColorBoxDirty = false;
         }
 
         private async void Save()
@@ -435,7 +446,7 @@ namespace ClientApp.Pages
                 }
                 RaiseErrorsChanged("Name");
                 
-                if (Color == null)
+                if (isColorBoxDirty && Color == null)
                 {
                     AppendError("Color", "Color must be selected");
                 }

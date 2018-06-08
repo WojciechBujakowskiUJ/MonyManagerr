@@ -10,8 +10,10 @@ namespace Interfaces
         public string Name { get; set; }
         public decimal Value { get; set; }
         public int TransactionTypeId { get; set; }
+        public ITransactionType TransactionType { get; set; }
         public string Description { get; set; }
         public int? CustomerId { get; set; }
+        public ICustomer Customer { get; set; }
         public DateTime Date { get; set; }
     }
 }

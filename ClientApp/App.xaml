@@ -9,6 +9,11 @@
 
             <vc:HexToBrushConverter x:Key="HexToBrushConverter" />
             <vc:HexToColorNameConverter x:Key="HexToColorNameConverter" />
+            <vc:DttToNameConverter x:Key="DttToNameConverter" />
+            <vc:CustomerToNameConverter x:Key="CustomerToNameConverter" />
+            <vc:ValueToBrushConverter x:Key="ValueToBrushConverter" />
+            <vc:ValueToBackgroundBrushConverter x:Key="ValueToBackgroundBrushConverter" />
+            <vc:CustomHeightConverter x:Key="CustomHeightConverter" />
 
             <Style x:Key="PageTitleStyle" TargetType="Label">
                 <Setter Property="FontSize" Value="20" />

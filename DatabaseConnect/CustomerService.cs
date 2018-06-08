@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Text;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace DatabaseConnect
 {
@@ -15,6 +16,11 @@ namespace DatabaseConnect
         public ICustomer GetCustomerById(int id)
         {
            return GetCustomers(new CustomerFilter() { Id = id }).FirstOrDefault();
+        }
+
+        public IList<ICustomer> GetCustomers()
+        {
+            return GetCustomers(new CustomerFilter());
         }
 
         public IList<ICustomer> GetCustomers(ICustomerFilter filter)
@@ -43,7 +49,7 @@ namespace DatabaseConnect
             var table = SqlService.GetDataTable(sqlQueryBuilder);
             var myEnumerable = table.AsEnumerable();
 
-            return ( from item in myEnumerable select new Customer
+            var result = ( from item in myEnumerable select new Customer
                  {
                      Active = item.Field<bool>("Active"),
                      DefaultTransactionTypeId = item.Field<int?>("DefaultTransactionTypeId"),
@@ -51,6 +57,19 @@ namespace DatabaseConnect
                      Description = item.Field<string>("Description"),
                      Id = item.Field<int>("Id")
                  }).ToList<ICustomer>();
+
+            var ttService = new TransactionTypeService();
+            var tts = ttService.GetTransactionTypes();
+
+            foreach (var customer in result)
+            {
+                if (customer.DefaultTransactionTypeId.HasValue)
+                {
+                    customer.DefaultTransactionType = tts.Where(tt => tt.Id == customer.DefaultTransactionTypeId.Value).FirstOrDefault();
+                }
+            }
+
+            return result;
         }
 
         public void Delete(int id)
@@ -112,5 +131,49 @@ namespace DatabaseConnect
                 return SqlService.ExecuteScalar(query, sqlParameterCollection.ToArray());
             }
         }
+
+        #region Async
+
+        public Task<int> SaveAsync(ICustomer customer)
+        {
+            return Task.Factory.StartNew<int>(() => 
+            {
+                return Save(customer);
+            });
+        }
+
+        public Task<ICustomer> GetCustomerByIdAsync(int id)
+        {
+            return Task.Factory.StartNew<ICustomer>(() =>
+            {
+                return GetCustomerById(id);
+            });
+        }
+
+        public Task<IList<ICustomer>> GetCustomersAsync(ICustomerFilter filter)
+        {
+            return Task.Factory.StartNew<IList<ICustomer>>(() =>
+            {
+                return GetCustomers(filter);
+            });
+        }
+
+        public Task<IList<ICustomer>> GetCustomersAsync()
+        {
+            return Task.Factory.StartNew<IList<ICustomer>>(() =>
+            {
+                return GetCustomers();
+            });
+        }
+
+        public Task DeleteAsync(int id)
+        {
+            return Task.Factory.StartNew(() =>
+            {
+                Delete(id);
+            });
+        }
+
+        #endregion
     }
 }

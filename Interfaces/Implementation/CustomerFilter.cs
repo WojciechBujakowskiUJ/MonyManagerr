@@ -10,7 +10,5 @@ namespace Interfaces.Implementation
         public string Name { get; set; }
         public bool? Active { get; set; }
         public int? DefaultTransactionTypeId { get; set; }
-
-
     }
 }
