@@ -11,6 +11,8 @@ namespace ClientApp.Helpers.Converters
 {
     public class DttToNameConverter : IValueConverter
     {
+        private const string DEFAULT_FALLBACK_STRING = "None";
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is ITransactionType)
@@ -22,12 +24,20 @@ namespace ClientApp.Helpers.Converters
                 }
                 else
                 {
-                    return "None";
+                    string param = parameter as string;
+                    if (param != null)
+                    {
+                        return param;
+                    }
+                    else
+                    {
+                        return DEFAULT_FALLBACK_STRING;
+                    }
                 }
             }
             else
             {
-                return "None";
+                return DEFAULT_FALLBACK_STRING;
             }
         }
 

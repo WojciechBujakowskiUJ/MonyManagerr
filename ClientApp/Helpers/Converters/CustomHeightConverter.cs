@@ -11,7 +11,7 @@ namespace ClientApp.Helpers.Converters
 {
     public class CustomHeightConverter : IValueConverter
     {
-        public const double MIN_GRID_PANEL_HEIGHT = 110.0;
+        private const double MIN_GRID_PANEL_HEIGHT = 110.0;
 
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {

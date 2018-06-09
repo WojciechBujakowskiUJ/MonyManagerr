@@ -22,7 +22,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="100"/>
-                <RowDefinition Height="{Binding ElementName=TPage, Path=ActualHeight, Converter={StaticResource CustomHeightConverter}, ConverterParameter=380}" />
+                <RowDefinition Height="{Binding ElementName=TPage, Path=ActualHeight, Converter={StaticResource CustomHeightConverter}, ConverterParameter=400}" />
                 <RowDefinition Height="230"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -79,7 +79,7 @@
                               SelectedItem="{Binding FilterTransactionType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Margin="3,0,0,0" Text="{Binding Name}"/>
+                                <TextBlock Margin="3,0,0,0" Text="{Binding Name, Converter={StaticResource NoneToAllConverter}}"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>
@@ -89,7 +89,7 @@
                               SelectedItem="{Binding FilterCustomer, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                         <ComboBox.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Margin="3,0,0,0" Text="{Binding Name}"/>
+                                <TextBlock Margin="3,0,0,0" Text="{Binding Name, Converter={StaticResource NoneToAllConverter}}"/>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
                     </ComboBox>

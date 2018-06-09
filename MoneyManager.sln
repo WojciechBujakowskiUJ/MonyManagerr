@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseConnectTests", "Dat
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientApp", "ClientApp\ClientApp.csproj", "{BCCA755C-5FE6-4687-B63C-185196A89E88}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Statistics", "Statistics\Statistics.csproj", "{33A9D81E-8C31-4E78-98A2-DE64F29B5BD0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{BCCA755C-5FE6-4687-B63C-185196A89E88}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCCA755C-5FE6-4687-B63C-185196A89E88}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BCCA755C-5FE6-4687-B63C-185196A89E88}.Release|Any CPU.Build.0 = Release|Any CPU
+		{33A9D81E-8C31-4E78-98A2-DE64F29B5BD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{33A9D81E-8C31-4E78-98A2-DE64F29B5BD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{33A9D81E-8C31-4E78-98A2-DE64F29B5BD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{33A9D81E-8C31-4E78-98A2-DE64F29B5BD0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

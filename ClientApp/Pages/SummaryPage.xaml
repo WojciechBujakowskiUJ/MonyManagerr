@@ -6,13 +6,124 @@
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
       xmlns:local="clr-namespace:ClientApp.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800">
+      d:DesignHeight="450" d:DesignWidth="800"
+      IsEnabled="{Binding AllowInput}">
+    
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
-            <i:InvokeCommandAction Command="{Binding LoadCommand}" />
+            <i:InvokeCommandAction Command="{Binding LoadCommand}" CommandParameter="{Binding ElementName=BCGrid}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <Grid>
-        <Label Content="SUMMARY" />
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width=".5*"/>
+            <ColumnDefinition Width=".5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="90" />
+            <RowDefinition Height=".5*" />
+            <RowDefinition Height="100" />
+            <RowDefinition Height=".5*" />
+        </Grid.RowDefinitions>
+
+        <!-- TITLE -->
+        <Border Grid.Row="0" Grid.Column="0" Margin="3,0,3,3" BorderThickness="1" BorderBrush="LightGray">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Label Style="{StaticResource PageTitleStyle}" FontSize="26" Content="MONEY MANAGER"/>
+                <Label Style="{StaticResource SummarySubtitleStyle}" Margin="0,-5,0,0" Content="TRANSACTIONS SUMMARY"/>
+            </StackPanel>
+        </Border>
+
+        <!-- DATE FILTER -->
+        <Border Grid.Row="0" Grid.Column="1" Margin="3,0,3,3" BorderThickness="1" BorderBrush="LightGray">
+            <StackPanel Orientation="Vertical" Margin="2">
+                <DockPanel Margin="2">
+                    <ComboBox DockPanel.Dock="Right" Width="150" SelectedItem="{Binding TimeStep, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                              ItemsSource="{Binding CurrentTimeStepOptions}"/>
+                    <Label DockPanel.Dock="Right" Content="Time Step" Margin="0,0,5,0" HorizontalContentAlignment="Right"/>
+                </DockPanel>
+                <Grid Margin="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width="40"/>
+                        <ColumnDefinition Width=".5*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Content="From" HorizontalContentAlignment="Right" Padding="3" Margin="0,0,5,0"/>
+                    <DatePicker Grid.Column="1" SelectedDate="{Binding DateMin, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right" />
+                    <Label Grid.Column="2" Content="To" HorizontalContentAlignment="Right" Padding="3" Margin="0,0,5,0"/>
+                    <DatePicker Grid.Column="3" SelectedDate="{Binding DateMax, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalContentAlignment="Right" />
+                </Grid>
+                <TextBlock Margin="2" TextAlignment="Right" HorizontalAlignment="Right">
+                            Last 
+                            <Hyperlink Command="{Binding TimespanCommand}" CommandParameter="DAY"> Day </Hyperlink>,
+                            <Hyperlink Command="{Binding TimespanCommand}" CommandParameter="WEEK"> Week </Hyperlink>,
+                            <Hyperlink Command="{Binding TimespanCommand}" CommandParameter="MONTH"> 30 Days </Hyperlink>,
+                            <Hyperlink Command="{Binding TimespanCommand}" CommandParameter="YEAR"> Year </Hyperlink>
+                </TextBlock>
+            </StackPanel>
+        </Border>
+
+        <!-- BAR CHART -->
+        <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" BorderThickness="1" BorderBrush="LightGray">
+            <Grid Margin="2" x:Name="BCGrid">
+                <Label Style="{StaticResource BigContextStyle}" Content="LOADING..."/>
+            </Grid>
+        </Border>
+
+        <!-- PIE CHART FILTERS -->
+        <Border Grid.Row="2" Grid.Column="0" Margin="3" BorderThickness="1" BorderBrush="LightGray">
+            <StackPanel Margin="2" Orientation="Vertical">
+                <Label Style="{StaticResource SummarySubtitleStyle}" FontSize="14" Content="TRANSACTION TYPES BREAKDOWN"/>
+                <Grid Margin="0,5,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width=".4*"/>
+                        <ColumnDefinition Width=".6*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label Grid.Column="0" Grid.Row="0" HorizontalContentAlignment="Right" Padding="5" VerticalAlignment="Center" Content="Category"/>
+                    <ComboBox Margin="0,0,5,0" Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" ItemsSource="{Binding CategoryOptions, UpdateSourceTrigger=PropertyChanged}" 
+                              SelectedItem="{Binding IsIncome, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="3,0,0,0" Text="{Binding Converter={StaticResource BoolToCategoryConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+                    <Label Grid.Column="0" Grid.Row="1" HorizontalContentAlignment="Right" Padding="5" VerticalAlignment="Center" Content="Filter by Customer"/>
+                    <ComboBox Margin="0,0,5,0" Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" ItemsSource="{Binding CustomerOptions, UpdateSourceTrigger=PropertyChanged}" 
+                              SelectedItem="{Binding FilterCustomer, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Margin="3,0,0,0" Text="{Binding Name, Converter={StaticResource NoneToAllConverter}}"/>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+
+
+                </Grid>
+                
+
+            </StackPanel>
+        </Border>
+
+        <!-- PIE CHART LIST -->
+        <Border Grid.Row="3" Grid.Column="0" Margin="3,3,3,0" BorderThickness="1" BorderBrush="LightGray">
+            <Label Style="{StaticResource BigContextStyle}" Content="PC LIST"/>
+        </Border>
+
+        <!-- PIE CHART -->
+        <Border Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" Margin="3,3,3,0" BorderThickness="1" BorderBrush="LightGray">
+            <Label Style="{StaticResource BigContextStyle}" Content="PIE CHART"/>
+        </Border>
+
+
+
     </Grid>
 </UserControl>

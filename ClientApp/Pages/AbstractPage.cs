@@ -61,8 +61,8 @@ namespace ClientApp.Pages
             {
                 if (_loadCommand == null)
                 {
-                    _loadCommand = new RelayCommand<string>(
-                        param => OnLoad(),
+                    _loadCommand = new RelayCommand<object>(
+                        param => OnLoad(param),
                         param => true
                     );
                 }
@@ -70,7 +70,7 @@ namespace ClientApp.Pages
             }
         }
 
-        protected virtual void OnLoad()
+        protected virtual void OnLoad(object param)
         {
             AllowInput = true;
             StartValidating = true;
@@ -116,7 +116,7 @@ namespace ClientApp.Pages
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void RaisePropertyChanged(string info, bool isMarked = false)
+        protected void RaisePropertyChanged(string info)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(info));
         }

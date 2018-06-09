@@ -82,14 +82,19 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Helpers\Converters\CategoryToBoolConverter.cs" />
+    <Compile Include="Helpers\Drawing\BarChartDrawer.cs" />
     <Compile Include="Helpers\ColorsDictionary.cs" />
     <Compile Include="Helpers\Converters\CustomerToNameConverter.cs" />
     <Compile Include="Helpers\Converters\CustomHeightConverter.cs" />
     <Compile Include="Helpers\Converters\DttToNameConverter.cs" />
     <Compile Include="Helpers\Converters\HexToBrushConverter.cs" />
     <Compile Include="Helpers\Converters\HexToColorNameConverter.cs" />
+    <Compile Include="Helpers\Converters\NoneToAllConverter.cs" />
     <Compile Include="Helpers\Converters\ValueToBackgroundBrushConverter.cs" />
     <Compile Include="Helpers\Converters\ValueToBrushConverter.cs" />
+    <Compile Include="Helpers\Drawing\BarChartDrawerFactory.cs" />
+    <Compile Include="Helpers\Drawing\IBarChartDrawer.cs" />
     <Compile Include="Helpers\RelayCommand.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -160,6 +165,10 @@
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{d19666cb-ef27-458c-8211-9937f4744ccb}</Project>
       <Name>Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Statistics\Statistics.csproj">
+      <Project>{33a9d81e-8c31-4e78-98a2-de64f29b5bd0}</Project>
+      <Name>Statistics</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

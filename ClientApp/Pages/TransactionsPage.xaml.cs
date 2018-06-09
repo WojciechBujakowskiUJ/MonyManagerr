@@ -617,7 +617,7 @@ namespace ClientApp.Pages
 
         #region Methods
 
-        protected async override void OnLoad()
+        protected async override void OnLoad(object param)
         {
             AllowInput = false;
 
@@ -642,7 +642,7 @@ namespace ClientApp.Pages
                 Customer = CustomerOptions.FirstOrDefault();
                 FilterCustomer = CustomerOptions.FirstOrDefault();
 
-                base.OnLoad();
+                base.OnLoad(param);
             }
             catch (SqlException e)
             {

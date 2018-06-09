@@ -338,7 +338,7 @@ namespace ClientApp.Pages
 
         #region Methods
 
-        protected async override void OnLoad()
+        protected async override void OnLoad(object param)
         {
             AllowInput = false;
 
@@ -372,7 +372,7 @@ namespace ClientApp.Pages
             }
 
 
-            base.OnLoad();
+            base.OnLoad(param);
         }
 
         private void ReloadEditor()

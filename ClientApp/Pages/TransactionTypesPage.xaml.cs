@@ -337,7 +337,7 @@ namespace ClientApp.Pages
 
         #region Methods
 
-        protected async override void OnLoad()
+        protected async override void OnLoad(object param)
         {
             try
             {
@@ -348,7 +348,7 @@ namespace ClientApp.Pages
                 TransactionTypes = new ObservableCollection<ITransactionType>(transactionTypesRaw);
 
                 ReloadEditor();
-                base.OnLoad();
+                base.OnLoad(param);
             }
             catch (SqlException e)
             {
