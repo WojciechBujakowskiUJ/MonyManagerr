@@ -4,6 +4,7 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+      xmlns:oxy="clr-namespace:OxyPlot.Wpf;assembly=OxyPlot.Wpf"
       xmlns:local="clr-namespace:ClientApp.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
@@ -106,21 +107,37 @@
                         </ComboBox.ItemTemplate>
                     </ComboBox>
 
-
                 </Grid>
-                
-
+ 
             </StackPanel>
         </Border>
 
         <!-- PIE CHART LIST -->
         <Border Grid.Row="3" Grid.Column="0" Margin="3,3,3,0" BorderThickness="1" BorderBrush="LightGray">
-            <Label Style="{StaticResource BigContextStyle}" Content="PC LIST"/>
+            <ItemsControl Margin="2" ItemsSource="{Binding PieChartData}" VerticalAlignment="Center">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel Margin="2" Height="25">
+                            <Border DockPanel.Dock="Left" Width="16" Height="16" CornerRadius="8" Margin="8,0" VerticalAlignment="Center" Background="{Binding Path=FillColor, Converter={StaticResource HexToBrushConverter}}" />
+                            <Label DockPanel.Dock="Left" VerticalAlignment="Center" Content="{Binding Path=Name}"/>
+                            <Label DockPanel.Dock="Right" Margin="0,0,8,0" HorizontalContentAlignment="Right" VerticalAlignment="Center" HorizontalAlignment="Right" Content="{Binding Path=Value, StringFormat={}{0:N2}}"
+                                   Foreground="{Binding Path=Value, Converter={StaticResource ValueToBrushConverter}}"/>
+                        </DockPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Border>
-
+        
         <!-- PIE CHART -->
         <Border Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" Margin="3,3,3,0" BorderThickness="1" BorderBrush="LightGray">
-            <Label Style="{StaticResource BigContextStyle}" Content="PIE CHART"/>
+            <Grid Margin="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height=".2*"/>
+                    <RowDefinition Height=".8*"/>
+                </Grid.RowDefinitions>
+                <Label Style="{StaticResource SummarySubtitleStyle}" Content="TRANSACTIONS BY TYPE" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                <oxy:PlotView Grid.Row="1" Model="{Binding PieModel}" Margin="20" />
+            </Grid>
         </Border>
 
 

@@ -31,7 +31,7 @@
     
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200" />
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
@@ -40,16 +40,47 @@
         
         <!-- SIDE PANEL - BUTTONS -->
         <StackPanel Grid.Column="0" Grid.Row="0" Orientation="Vertical">
-            <Button Margin="5" Height="60" Content="Summary" Command="{Binding SummaryPageCommand}" />
-            <Border Margin="5,10" BorderThickness="1" BorderBrush="DarkGray" />
-            <Button Margin="5" Height="30" Content="Transactions" Command="{Binding TransactionsPageCommand}" />
-            <Button Margin="5" Height="30" Content="Transaction Types" Command="{Binding TransactionTypesPageCommand}" />
-            <Button Margin="5" Height="30" Content="Customers" Command="{Binding CustomersPageCommand}" />
+            <Button Margin="3,7,0,3" Height="87" Command="{Binding SummaryPageCommand}" BorderThickness="0">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border Background="{Binding CurrentPageType, Converter={StaticResource SideButtonColorConverter}, ConverterParameter=Summary}" CornerRadius="10,0,0,10">
+                            <TextBlock Style="{StaticResource SideButtonTextStyle}" FontSize="24" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Text="SUMMARY"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Margin="3,3,0,3" Height="30" Command="{Binding TransactionsPageCommand}" BorderThickness="0">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border Background="{Binding CurrentPageType, Converter={StaticResource SideButtonColorConverter}, ConverterParameter=Transactions}" CornerRadius="10,0,0,10">
+                            <TextBlock Style="{StaticResource SideButtonTextStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Text="TRANSACTIONS"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Margin="3,3,0,3" Height="30" Command="{Binding TransactionTypesPageCommand}" BorderThickness="0">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border Background="{Binding CurrentPageType, Converter={StaticResource SideButtonColorConverter}, ConverterParameter=TransactionTypes}" CornerRadius="10,0,0,10">
+                            <TextBlock Style="{StaticResource SideButtonTextStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Text="TRANSACTION TYPES"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+            <Button Margin="3,3,0,3" Height="30" Command="{Binding CustomersPageCommand}" BorderThickness="0">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Border Background="{Binding CurrentPageType, Converter={StaticResource SideButtonColorConverter}, ConverterParameter=Customers}" CornerRadius="10,0,0,10">
+                            <TextBlock Style="{StaticResource SideButtonTextStyle}" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray" Text="CUSTOMERS"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </StackPanel>
                 
         <!-- PAGE CONTENT -->
-        <Border Grid.Column="1" Grid.Row="0" Margin="0,5" BorderThickness="1,0,0,0" BorderBrush="DarkGray">
-            <ContentControl Margin="2" Content="{Binding CurrentPage}"/>
+        <Border Grid.Column="1" Grid.Row="0" BorderThickness="2,0,0,0" BorderBrush="LightGray">
+            <ContentControl Margin="2,7,2,7" Content="{Binding CurrentPage}"/>
         </Border>
              
     </Grid>

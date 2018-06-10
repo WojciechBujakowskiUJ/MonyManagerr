@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Statistics.Interfaces
 {
-    public interface IBarChartDataContainer<LabelType, ValueType>
+    public interface IBarChartDataContainer<TLabel, TValue>
     {
-       IList<IBarChartEntry<LabelType,ValueType>> BarChartData { get; }
+       IList<IBarChartEntry<TLabel,TValue>> BarChartData { get; }
     }
 }

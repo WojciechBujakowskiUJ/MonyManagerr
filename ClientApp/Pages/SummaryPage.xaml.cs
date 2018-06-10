@@ -107,6 +107,7 @@ namespace ClientApp.Pages
 
                     ReloadTimeStepOptions();
                     ReloadBarChart();
+                    ReloadPieChart();
                 }
             }
         }
@@ -127,6 +128,7 @@ namespace ClientApp.Pages
 
                     ReloadTimeStepOptions();
                     ReloadBarChart();
+                    ReloadPieChart();
                 }
             }
         }
@@ -144,6 +146,8 @@ namespace ClientApp.Pages
                 {
                     _isIncome = value;
                     RaisePropertyChanged("IsIncome");
+
+                    ReloadPieChart();
                 }
             }
         }
@@ -160,7 +164,9 @@ namespace ClientApp.Pages
                 if (_filterCustomer != value)
                 {
                     _filterCustomer = value;
-                    RaisePropertyChanged("FilterCustomer");                    
+                    RaisePropertyChanged("FilterCustomer");
+
+                    ReloadPieChart();
                 }
             }
         }
@@ -224,6 +230,40 @@ namespace ClientApp.Pages
             }
         }
 
+        private ObservableCollection<PieChartEntry> _pieChartData = new ObservableCollection<PieChartEntry>();
+        public ObservableCollection<PieChartEntry> PieChartData
+        {
+            get
+            {
+                return _pieChartData;
+            }
+            set
+            {
+                if (_pieChartData != value)
+                {
+                    _pieChartData = value;
+                    RaisePropertyChanged("PieChartData");
+                }
+            }
+        }
+
+        private OxyPlot.PlotModel _pieModel = null;
+        public OxyPlot.PlotModel PieModel
+        {
+            get
+            {
+                return _pieModel;
+            }
+            set
+            {
+                if (_pieModel != value)
+                {
+                    _pieModel = value;
+                    RaisePropertyChanged("PieModel");
+                }
+            }
+        }
+
         #endregion
 
         #endregion
@@ -271,6 +311,7 @@ namespace ClientApp.Pages
                 IsIncome = false;
 
                 ReloadBarChart();
+                ReloadPieChart();
 
                 base.OnLoad(param);
             }
@@ -315,13 +356,24 @@ namespace ClientApp.Pages
             }
         }
 
-        private async void ReloadBarChart()
+        private async void ReloadPieChart()
         {
-            var statsRes = await stats.CalculateAsync(data, DateMin, DateMax, TimeStep);
-            BcDrawer.Redraw(statsRes);
+            var pcData = await PreparePieDataAsync(data.ToList());
+
+            PieChartData.Clear();
+            foreach (var item in pcData)
+            {
+                PieChartData.Add(item);
+            }
+
+            PieModel = PieChartModelProvider.GetModel(pcData);
         }
 
-        #region Helper Methods
+        private async void ReloadBarChart()
+        {
+            var statsRes = await stats.CalculateAsync(data.ToList(), DateMin, DateMax, TimeStep);
+            BcDrawer.Redraw(statsRes);
+        }
 
         private void ReloadTimeStepOptions()
         {
@@ -330,8 +382,28 @@ namespace ClientApp.Pages
 
         #endregion
 
-        #endregion
+        #region Async
 
+        private Task<IList<PieChartEntry>> PreparePieDataAsync(IList<ITransaction> rawData)
+        {
+            return Task.Factory.StartNew<IList<PieChartEntry>>(() =>
+            {
+                var query = rawData.Where(t => t.Date >= DateMin && t.Date <= DateMax);
+                if (FilterCustomer != null && FilterCustomer.Id != 0)
+                {
+                    query = query.Where(t => t.CustomerId == FilterCustomer.Id);
+                }
+
+                query = IsIncome ? query.Where(t => t.Value >= 0M) : query.Where(t => t.Value <= 0M);
+
+                return query.GroupBy(t => t.TransactionType)
+                    .Select(grp => new PieChartEntry(grp.Key.Name, grp.Sum(t => t.Value), grp.Key.Color))
+                    .ToList();
+            });
+
+        }
+
+        #endregion
 
     }
 
