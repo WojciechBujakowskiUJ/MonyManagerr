@@ -3,6 +3,7 @@ using DatabaseConnect;
 using Interfaces;
 using Interfaces.Implementation;
 using Statistics;
+using Statistics.TransactionStatistics;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,14 +28,18 @@ namespace ClientApp.Pages
 
         #region Local Fields
 
-        private BarChartDrawerFactory bcdFactory = new BarChartDrawerFactory();
+        private readonly BarChartDrawerFactory bcdFactory = new BarChartDrawerFactory();
+
+        private readonly TransactionStatisticsProvider stats = new TransactionStatisticsProvider();
+
+        private IList<ITransaction> data = new List<ITransaction>();
 
         #endregion
 
         #region Local Properties
 
-        private IBarChartDrawer _bcDrawer = null;
-        public IBarChartDrawer BcDrawer
+        private IBarChartDrawer<DateTime,decimal> _bcDrawer = null;
+        public IBarChartDrawer<DateTime, decimal> BcDrawer
         {
             get
             {
@@ -80,6 +85,8 @@ namespace ClientApp.Pages
                 {
                     _timeStep = value;
                     RaisePropertyChanged("TimeStep");
+
+                    ReloadBarChart();
                 }
             }
         }
@@ -99,6 +106,7 @@ namespace ClientApp.Pages
                     RaisePropertyChanged("DateMin");
 
                     ReloadTimeStepOptions();
+                    ReloadBarChart();
                 }
             }
         }
@@ -118,6 +126,7 @@ namespace ClientApp.Pages
                     RaisePropertyChanged("DateMax");
 
                     ReloadTimeStepOptions();
+                    ReloadBarChart();
                 }
             }
         }
@@ -247,18 +256,21 @@ namespace ClientApp.Pages
 
             try
             {
-                BcDrawer = bcdFactory.Create(param as Grid);
+                BcDrawer = bcdFactory.CreateForTransactions(param as Grid);
                 ReloadTimeStepOptions();
 
                 IDatabaseService dbconn = new DatabaseService();
                 dbconn.ConnectionString = ConnectionStringsProvider.Get();
 
                 CustomerOptions = await dbconn.CustomerService.GetCustomersAsync();
+                data = await dbconn.TransactionService.GetTransactionsAsync();
 
                 RaisePropertyChanged("CustomerOptions");
 
                 FilterCustomer = CustomerOptions.FirstOrDefault();
                 IsIncome = false;
+
+                ReloadBarChart();
 
                 base.OnLoad(param);
             }
@@ -301,6 +313,12 @@ namespace ClientApp.Pages
             default:
                 throw new NotImplementedException();
             }
+        }
+
+        private async void ReloadBarChart()
+        {
+            var statsRes = await stats.CalculateAsync(data, DateMin, DateMax, TimeStep);
+            BcDrawer.Redraw(statsRes);
         }
 
         #region Helper Methods

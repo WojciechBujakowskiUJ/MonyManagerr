@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Statistics.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ClientApp.Helpers.Drawing
 {
-    public interface IBarChartDrawer
+    public interface IBarChartDrawer<LabelType, ValueType>
     {
-        void Redraw(object data);        
+        void Redraw(IBarChartDataContainer<LabelType, ValueType> data);        
     }
 }

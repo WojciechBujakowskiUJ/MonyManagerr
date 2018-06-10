@@ -9,7 +9,7 @@ namespace ClientApp.Helpers.Drawing
 {
     public class BarChartDrawerFactory
     {
-        public IBarChartDrawer Create(Grid drawingGrid)
+        public IBarChartDrawer<DateTime, decimal> CreateForTransactions(Grid drawingGrid)
         {
             if (drawingGrid == null)
             {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Statistics.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,7 +8,7 @@ using System.Windows.Controls;
 
 namespace ClientApp.Helpers.Drawing
 {
-    internal class BarChartDrawer : IBarChartDrawer
+    internal class BarChartDrawer : IBarChartDrawer<DateTime, decimal>
     {
 
         #region Local Fields
@@ -27,9 +28,11 @@ namespace ClientApp.Helpers.Drawing
 
         #region Interface Methods
 
-        public void Redraw(object data)
+        public void Redraw(IBarChartDataContainer<DateTime, decimal> data)
         {
             drawingGrid.Children.Clear();
+
+            // TODO
         } 
 
         #endregion
