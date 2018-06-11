@@ -22,7 +22,7 @@ namespace ClientApp.Helpers.Converters
                 }
                 else if (t < 0M)
                 {
-                    return Brushes.DarkRed;
+                    return Brushes.Red;
                 }
                 else
                 {

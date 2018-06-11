@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace Statistics.Interfaces
 {
-    public interface IBarChartEntry<LabelType, ValueType>
+    public interface IBarChartEntry<TLabel, TValue>
     {
-        LabelType Label { get; set; }
+        TLabel Label { get; set; }
 
-        ValueType PosValue { get; set; }
-        ValueType NegValue { get; set; }
-        ValueType TotalValue { get; }
+        TValue PosValue { get; set; }
+        TValue NegValue { get; set; }
+        TValue TotalValue { get; }
     }
 }

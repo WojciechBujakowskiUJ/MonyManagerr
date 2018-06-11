@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace ClientApp.Helpers.Drawing
 {
-    public interface IBarChartDrawer<LabelType, ValueType>
+    public interface IBarChartDrawer<TLabel, TValue>
     {
-        void Redraw(IBarChartDataContainer<LabelType, ValueType> data);        
+        void Redraw(IBarChartDataContainer<TLabel, TValue> data);        
     }
 }
