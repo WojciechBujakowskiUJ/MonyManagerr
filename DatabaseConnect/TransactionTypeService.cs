@@ -64,6 +64,12 @@ namespace DatabaseConnect
         }
 
 
+        public void ClearTables()
+        {
+            string query = @" DELETE FROM [dbo].[TransactionType] ";
+            IList<SqlParameter> sqlParameterCollection = new List<SqlParameter>();
+            SqlService.ExecuteNonQuery(query, sqlParameterCollection.ToArray());
+        }
         public int Save(ITransactionType transactionType)
         {
             string query = @"INSERT INTO [dbo].[TransactionType]
@@ -176,6 +182,7 @@ namespace DatabaseConnect
                 Delete(id);
             });
         }
+
 
 
         #endregion

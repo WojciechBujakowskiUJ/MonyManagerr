@@ -12,7 +12,7 @@ namespace Interfaces
         IList<ITransaction> GetTransactions();
         IList<ITransaction> GetTransactions(ITransactionFilter filter);
         void Delete(int id);
-
+        void ClearTables();
         Task<int> SaveAsync(ITransaction transaction);
         Task<ITransaction> GetTransactionByIdAsync(int id);
         Task<IList<ITransaction>> GetTransactionsAsync();

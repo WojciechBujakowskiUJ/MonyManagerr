@@ -71,7 +71,12 @@ namespace DatabaseConnect
 
             return result;
         }
-
+        public void ClearTables()
+        {
+            string query = @" DELETE FROM [dbo].[Customer] ";
+            IList<SqlParameter> sqlParameterCollection = new List<SqlParameter>();
+            SqlService.ExecuteNonQuery(query, sqlParameterCollection.ToArray());
+        }
         public void Delete(int id)
         {
             String query = @" DELETE FROM [dbo].[Customer] WHERE Id = @Id";

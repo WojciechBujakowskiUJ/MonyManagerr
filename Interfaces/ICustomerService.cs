@@ -12,6 +12,7 @@ namespace Interfaces
         IList<ICustomer> GetCustomers(ICustomerFilter filter);
         IList<ICustomer> GetCustomers();
         void Delete(int id);
+        void ClearTables();
 
         Task<int> SaveAsync(ICustomer customer);
         Task<ICustomer> GetCustomerByIdAsync(int id);

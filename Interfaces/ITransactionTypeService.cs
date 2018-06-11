@@ -12,6 +12,7 @@ namespace Interfaces
         IList<ITransactionType> GetTransactionTypes();
         IList<ITransactionType> GetTransactionTypes(ITransactionTypeFilter filter);
         void Delete(int id);
+        void ClearTables();
 
         Task<int> SaveAsync(ITransactionType transactionType);
         Task<ITransactionType> GetTransactionTypeByIdAsync(int id);
