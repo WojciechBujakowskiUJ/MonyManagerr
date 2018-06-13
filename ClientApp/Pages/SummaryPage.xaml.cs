@@ -1,4 +1,5 @@
-﻿using ClientApp.Helpers.Drawing;
+﻿using ClientApp.Helpers;
+using ClientApp.Helpers.Drawing;
 using DatabaseConnect;
 using Interfaces;
 using Interfaces.Implementation;
@@ -247,6 +248,23 @@ namespace ClientApp.Pages
             }
         }
 
+        public OxyPlot.PlotModel _barModel;
+        public OxyPlot.PlotModel BarModel
+        {
+            get
+            {
+                return _barModel;
+            }
+            set
+            {
+                _barModel = value;
+                RaisePropertyChanged("BarModel");
+
+            }
+
+        }
+
+
         private OxyPlot.PlotModel _pieModel = null;
         public OxyPlot.PlotModel PieModel
         {
@@ -372,7 +390,8 @@ namespace ClientApp.Pages
         private async void ReloadBarChart()
         {
             var statsRes = await stats.CalculateAsync(data.ToList(), DateMin, DateMax, TimeStep);
-            BcDrawer.Redraw(statsRes);
+            // BcDrawer.Redraw(statsRes);
+            BarModel = BarChartModelProvider.GetModel(statsRes, TimeStep);
         }
 
         private void ReloadTimeStepOptions()
