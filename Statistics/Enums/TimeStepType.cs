@@ -22,8 +22,6 @@ namespace Statistics
         {
             var result = new List<TimeStepType>();
 
-            result.Add(TimeStepType.Default);
-
             if (ts.TotalHours < 50.0)
             {
                 result.Add(TimeStepType.Hour);

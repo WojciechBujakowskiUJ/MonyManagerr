@@ -260,4 +260,5 @@ paket-files/
 __pycache__/
 *.pyc
 /DatabaseConnect/database.config
-/DatabaseConnect/ConnectionStringProvider.cs
+/ClientApp/database.config
+/DatabaseConnectTests/database.config

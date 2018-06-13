@@ -23,9 +23,9 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="90" />
-            <RowDefinition Height=".5*" />
+            <RowDefinition Height=".6*" />
             <RowDefinition Height="100" />
-            <RowDefinition Height=".5*" />
+            <RowDefinition Height=".4*" />
         </Grid.RowDefinitions>
 
         <!-- TITLE -->
@@ -68,9 +68,35 @@
 
         <!-- BAR CHART -->
         <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="3" BorderThickness="1" BorderBrush="LightGray">
-            <Grid Margin="2" x:Name="BCGrid">
-                <oxy:PlotView  Model="{Binding BarModel}" Margin="0"/>
-            </Grid>
+            <TabControl Margin="2">
+                <TabItem Header="Chart">
+                    <Grid Margin="2" x:Name="BCGrid">
+                        <oxy:PlotView Model="{Binding BarModel}" Margin="0"/>
+                    </Grid>
+                </TabItem>
+                <TabItem Header="Basic Info">
+                    <Grid Margin="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width=".3*"/>
+                            <ColumnDefinition Width=".3*"/>
+                            <ColumnDefinition Width=".4*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height=".6*"/>
+                            <RowDefinition Height=".4*"/>
+                        </Grid.RowDefinitions>
+                        <Label Grid.Row="1" Grid.Column="0" Content="TOTAL INCOME" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" Margin="5" FontSize="16" Foreground="Gray" FontWeight="Bold"/>
+                        <Label Grid.Row="1" Grid.Column="1" Content="TOTAL EXPENSES" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" Margin="5" FontSize="16" Foreground="Gray" FontWeight="Bold"/>
+                        <Label Grid.Row="1" Grid.Column="2" Content="TOTAL BALANCE" HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Top" Margin="5" FontSize="16" Foreground="Gray" FontWeight="Bold"/>
+                        <Label Grid.Row="0" Grid.Column="0" Content="{Binding CurrentTotalIncome}" Foreground="{Binding CurrentTotalIncome, Converter={StaticResource ValueToBrushConverter}}"
+                               HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Bottom" FontSize="24" FontWeight="Bold" Margin="5"/>
+                        <Label Grid.Row="0" Grid.Column="1" Content="{Binding CurrentTotalExpenses}" Foreground="{Binding CurrentTotalExpenses, Converter={StaticResource ValueToBrushConverter}}"
+                               HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Bottom" FontSize="24" FontWeight="Bold" Margin="5"/>
+                        <Label Grid.Row="0" Grid.Column="2" Content="{Binding CurrentBalance}" Foreground="{Binding CurrentBalance, Converter={StaticResource ValueToBrushConverter}}"
+                               HorizontalAlignment="Center" HorizontalContentAlignment="Center" VerticalAlignment="Bottom" FontSize="32" FontWeight="Bold" Margin="5"/>
+                    </Grid>
+                </TabItem>
+            </TabControl>
         </Border>
 
         <!-- PIE CHART FILTERS -->
@@ -139,8 +165,6 @@
                 <oxy:PlotView Grid.Row="1" Model="{Binding PieModel}" Margin="20" />
             </Grid>
         </Border>
-
-
 
     </Grid>
 </UserControl>

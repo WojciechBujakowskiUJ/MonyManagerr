@@ -107,6 +107,12 @@ namespace ClientApp.Pages
                     RaisePropertyChanged("DateMin");
 
                     ReloadTimeStepOptions();
+
+                    if (!CurrentTimeStepOptions.Any(tso => tso == TimeStep))
+                    {
+                        TimeStep = CurrentTimeStepOptions.FirstOrDefault();
+                    }
+
                     ReloadBarChart();
                     ReloadPieChart();
                 }
@@ -171,6 +177,61 @@ namespace ClientApp.Pages
                 }
             }
         }
+
+        #region Stats
+
+        private decimal _currentTotalIncome;
+        public decimal CurrentTotalIncome
+        {
+            get
+            {
+                return _currentTotalIncome;
+            }
+            set
+            {
+                if (_currentTotalIncome != value)
+                {
+                    _currentTotalIncome = value;
+                    RaisePropertyChanged("CurrentTotalIncome");
+                }
+            }
+        }
+
+        private decimal _currentTotalExpenses;
+        public decimal CurrentTotalExpenses
+        {
+            get
+            {
+                return _currentTotalExpenses;
+            }
+            set
+            {
+                if (_currentTotalExpenses != value)
+                {
+                    _currentTotalExpenses = value;
+                    RaisePropertyChanged("CurrentTotalExpenses");
+                }
+            }
+        }
+
+        private decimal _currentBalance;
+        public decimal CurrentBalance
+        {
+            get
+            {
+                return _currentBalance;
+            }
+            set
+            {
+                if (_currentBalance != value)
+                {
+                    _currentBalance = value;
+                    RaisePropertyChanged("CurrentBalance");
+                }
+            }
+        }
+
+        #endregion
 
         #region Options
 
@@ -248,7 +309,7 @@ namespace ClientApp.Pages
             }
         }
 
-        public OxyPlot.PlotModel _barModel;
+        public OxyPlot.PlotModel _barModel = null;
         public OxyPlot.PlotModel BarModel
         {
             get
@@ -257,13 +318,14 @@ namespace ClientApp.Pages
             }
             set
             {
-                _barModel = value;
-                RaisePropertyChanged("BarModel");
-
+                if (_barModel != value)
+                {
+                    _barModel = value;
+                    RaisePropertyChanged("BarModel");
+                }
             }
 
         }
-
 
         private OxyPlot.PlotModel _pieModel = null;
         public OxyPlot.PlotModel PieModel
@@ -314,8 +376,9 @@ namespace ClientApp.Pages
 
             try
             {
-                BcDrawer = bcdFactory.CreateForTransactions(param as Grid);
+                //BcDrawer = bcdFactory.CreateForTransactions(param as Grid);
                 ReloadTimeStepOptions();
+                TimeStep = CurrentTimeStepOptions.FirstOrDefault();
 
                 IDatabaseService dbconn = new DatabaseService();
                 dbconn.ConnectionString = ConnectionStringsProvider.Get();
@@ -376,6 +439,8 @@ namespace ClientApp.Pages
 
         private async void ReloadPieChart()
         {
+            AllowInput = false;
+
             var pcData = await PreparePieDataAsync(data.ToList());
 
             PieChartData.Clear();
@@ -385,18 +450,33 @@ namespace ClientApp.Pages
             }
 
             PieModel = PieChartModelProvider.GetModel(pcData);
+
+            AllowInput = true;
         }
 
         private async void ReloadBarChart()
         {
-            var statsRes = await stats.CalculateAsync(data.ToList(), DateMin, DateMax, TimeStep);
+            AllowInput = false;
+
+            var statsRes = await stats.CalculateAsync(data.ToList(), DateMin, DateMax, TimeStep, true);
+
+            CurrentBalance = statsRes.Balance.Sum;
+            CurrentTotalIncome = statsRes.Income.Sum;
+            CurrentTotalExpenses = statsRes.Expenses.Sum;
+
             // BcDrawer.Redraw(statsRes);
             BarModel = BarChartModelProvider.GetModel(statsRes, TimeStep);
+
+            AllowInput = true;
         }
 
         private void ReloadTimeStepOptions()
         {
+            AllowInput = false;
+
             CurrentTimeStepOptions = new ObservableCollection<TimeStepType>(TimeStepUtils.GetOptionsForTimeSpan(DateMax - DateMin));
+
+            AllowInput = true;
         }
 
         #endregion

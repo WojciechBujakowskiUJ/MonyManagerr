@@ -11,7 +11,7 @@ namespace Statistics.TransactionStatistics
     {
         public DateTime Label { get; set; }
 
-        private decimal _posValue { get; set; }
+        private decimal _posValue;
         public decimal PosValue
         {
             get
@@ -28,7 +28,7 @@ namespace Statistics.TransactionStatistics
             }
         }
 
-        private decimal _negValue { get; set; }
+        private decimal _negValue;
         public decimal NegValue
         {
             get

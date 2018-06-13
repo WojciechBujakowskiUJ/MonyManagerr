@@ -1,4 +1,5 @@
 ﻿using Interfaces;
+using Statistics.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace Statistics.TransactionStatistics
 
         public TransactionStatisticsProvider() { }
 
-        public TransactionStatisticsResult Calculate(IList<ITransaction> data, DateTime from, DateTime to, TimeStepType timeStep)
+        public TransactionStatisticsResult Calculate(IList<ITransaction> data, DateTime from, DateTime to, TimeStepType timeStep, bool fillBlankBars = false)
         {
             var result = new TransactionStatisticsResult();
 
@@ -68,6 +69,8 @@ namespace Statistics.TransactionStatistics
 
             }
 
+
+
             String dateFormat = "yyyyMMdd";
             if (timeStep == TimeStepType.Month)
             {
@@ -82,10 +85,15 @@ namespace Statistics.TransactionStatistics
                 dateFormat = "yyyyMMdd";
             }
 
+            if (fillBlankBars)
+            {
+                FillBlankPeriods(data, from, to, timeStep);
+            }
+
             if (timeStep == TimeStepType.Week)
             {
                 dateFormat = "yyyyMMdd";
-                data.Where(x => x.Date >= from && x.Date <= to).GroupBy(i => i.Date.AddDays(-(int)i.Date.DayOfWeek).ToString(dateFormat)).ToList()
+                data.OrderBy(x => x.Date).Where(x => x.Date >= from && x.Date <= to).GroupBy(i => i.Date.AddDays(-(int)i.Date.DayOfWeek).ToString(dateFormat)).ToList()
                                 .ForEach(y =>
                                 result.BarChartData.Add(new TransactionsBarEntry(
                                     DateTime.ParseExact(y.First().Date.ToString(dateFormat), dateFormat, System.Globalization.CultureInfo.InvariantCulture),
@@ -94,7 +102,7 @@ namespace Statistics.TransactionStatistics
             }
             else
             {
-                data.Where(x => x.Date >= from && x.Date <= to).GroupBy(i => i.Date.ToString(dateFormat)).ToList()
+                data.OrderBy(x => x.Date).Where(x => x.Date >= from && x.Date <= to).GroupBy(i => i.Date.ToString(dateFormat)).ToList()
                     .ForEach(y =>
                     result.BarChartData.Add(new TransactionsBarEntry(
                         DateTime.ParseExact(y.First().Date.ToString(dateFormat), dateFormat, System.Globalization.CultureInfo.InvariantCulture),
@@ -102,26 +110,63 @@ namespace Statistics.TransactionStatistics
                         y.Where(x => x.Value < 0).Sum(x => x.Value))));
             }
 
+            if (result.BarChartData != null && result.BarChartData.Count > 0)
+            {
+                result.Balance.MaxBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.TotalValue > i2.TotalValue ? i1 : i2);
+                result.Balance.MinBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.TotalValue < i2.TotalValue ? i1 : i2);
 
-            result.Balance.MaxBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.TotalValue > i2.TotalValue ? i1 : i2); ;
-            result.Balance.MinBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.TotalValue < i2.TotalValue ? i1 : i2); ;
+                result.Expenses.MaxBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.PosValue > i2.PosValue ? i1 : i2);
+                result.Expenses.MinBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.PosValue < i2.PosValue ? i1 : i2);
 
-            result.Expenses.MaxBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.PosValue > i2.PosValue ? i1 : i2); ;
-            result.Expenses.MinBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.PosValue < i2.PosValue ? i1 : i2); ;
-
-            result.Income.MaxBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.NegValue > i2.NegValue ? i1 : i2); ;
-            result.Income.MinBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.NegValue < i2.NegValue ? i1 : i2); ;
+                result.Income.MaxBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.NegValue > i2.NegValue ? i1 : i2);
+                result.Income.MinBar = (TransactionsBarEntry)result.BarChartData.Aggregate((i1, i2) => i1.NegValue < i2.NegValue ? i1 : i2);
+            }
 
             return result;
         }
 
-        public Task<TransactionStatisticsResult> CalculateAsync(IList<ITransaction> data, DateTime from, DateTime to, TimeStepType timeStep)
+        public Task<TransactionStatisticsResult> CalculateAsync(IList<ITransaction> data, DateTime from, DateTime to, TimeStepType timeStep, bool fillBlankBars = false)
         {
             return Task.Factory.StartNew<TransactionStatisticsResult>(() =>
             {
-                return Calculate(data, from, to, timeStep);
+                return Calculate(data, from, to, timeStep, fillBlankBars);
             });
         }
+
+        #region Helpers
+
+        private void FillBlankPeriods(IList<ITransaction> data, DateTime from, DateTime to, TimeStepType timeStep)
+        {
+            DateTime dt = from;
+
+            while (dt < to)
+            {
+                data.Add(new Transaction() { Date = dt, Value = 0M });
+
+                switch(timeStep)
+                {
+                case TimeStepType.Hour:
+                    dt = dt.AddHours(1);
+                    break;
+
+                case TimeStepType.Week:
+                    dt = dt.AddDays(7);
+                    break;
+
+                case TimeStepType.Month:
+                    dt = dt.AddDays(28);
+                    break;
+
+                default:
+                    dt = dt.AddDays(1);
+                    break;
+                }
+            }
+
+            data.Add(new Transaction() { Date = to, Value = 0M });
+        }
+
+        #endregion
 
     }
 }

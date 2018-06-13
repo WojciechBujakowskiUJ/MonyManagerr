@@ -18,20 +18,20 @@ namespace ClientApp.Helpers
 
             OxyPlot.PlotModel plot = new OxyPlot.PlotModel();
 
-            // BarSeries barSeries = new BarSeries { Title = "Balance", StrokeColor = OxyColors.Black};
-            //statsRes.BarChartData.ToList().ForEach(x => barSeries.Items.Add(new BarItem { Value = (Math.Abs((double)x.TotalValue))}));
+            //ColumnSeries barSeries = new ColumnSeries { Title = "Balance", StrokeColor = OxyColors.Black, FillColor = OxyColors.White, StrokeThickness = 1};
+            //data.BarChartData.ToList().ForEach(x => barSeries.Items.Add(new ColumnItem { Value = ((double)x.TotalValue)}));
 
-            BarSeries barSeries2 = new BarSeries { Title = "Income", StrokeColor = OxyColors.Black };
-            data.BarChartData.ToList().ForEach(x => barSeries2.Items.Add(new BarItem { Value = (double)x.PosValue }));
+            ColumnSeries barSeries2 = new ColumnSeries { Title = "Income", StrokeColor = OxyColors.Black, FillColor = OxyColors.Green.ChangeSaturation(0.4) };
+            data.BarChartData.ToList().ForEach(x => barSeries2.Items.Add(new ColumnItem { Value = (double)x.PosValue }));
+
+            ColumnSeries barSeries3 = new ColumnSeries { Title = "Expenses", StrokeColor = OxyColors.Black, FillColor = OxyColors.Red.ChangeSaturation(0.4) };
+            data.BarChartData.OrderBy(x => x.Label).ToList().ForEach(x => barSeries3.Items.Add(new ColumnItem { Value = -(double)x.NegValue }));
 
 
-            BarSeries barSeries3 = new BarSeries { Title = "Outcome", StrokeColor = OxyColors.Black };
-            data.BarChartData.OrderBy(x => x.Label).ToList().ForEach(x => barSeries3.Items.Add(new BarItem { Value = -(double)x.NegValue }));
-
-
-            // plot.Series.Add(barSeries);
             plot.Series.Add(barSeries2);
             plot.Series.Add(barSeries3);
+            //plot.Series.Add(barSeries);
+
             string dataFormat = "dd.MM.yyyy";
             if (timeStep == Statistics.TimeStepType.Month)
             {
@@ -42,9 +42,25 @@ namespace ClientApp.Helpers
                 dataFormat = "hh dd.MM.yyyy";
             }
 
-            var categoryAxis = new CategoryAxis { Position = AxisPosition.Left };
-            data.BarChartData.ToList().ForEach(x => categoryAxis.Labels.Add(x.Label.ToString(dataFormat)));
+            var categoryAxis = new CategoryAxis { Position = AxisPosition.Bottom, GapWidth = 0, TickStyle = TickStyle.Outside };
+
+            int barCount = data.BarChartData.Count;
+            int labelShift = barCount / 10 + 1;
+
+            for (int i = 0; i < barCount; ++i)
+            {
+                categoryAxis.Labels.Add(i % labelShift == 0 ? data.BarChartData[i].Label.ToString(dataFormat) : string.Empty);
+            }
+
+            //data.BarChartData.ToList().ForEach(x => categoryAxis.Labels.Add(x.Label.ToString(dataFormat)));
+
+
+
+
             plot.Axes.Add(categoryAxis);
+
+            plot.Axes.Add(new LinearAxis() { Position = AxisPosition.Left, MajorGridlineStyle = LineStyle.Solid, MinorGridlineStyle = LineStyle.Solid, MaximumPadding = 0.2 });
+
             return plot;
         }
 
