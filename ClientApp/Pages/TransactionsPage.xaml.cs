@@ -517,7 +517,7 @@ namespace ClientApp.Pages
         {
             get
             {
-                return (TransactionType == null || TransactionType.Income) ? 1000000000M : 0M;
+                return (TransactionType == null || TransactionType.Id == 0 || TransactionType.Income) ? 1000000000M : 0M;
             }
         }
 
@@ -525,7 +525,7 @@ namespace ClientApp.Pages
         {
             get
             {
-                return (TransactionType == null || !TransactionType.Income) ? -1000000000M : 0M;
+                return (TransactionType == null || TransactionType.Id == 0 || !TransactionType.Income) ? -1000000000M : 0M;
             }
         }
 
@@ -747,7 +747,7 @@ namespace ClientApp.Pages
                 var transactionsRaw = await dbconn.TransactionService.GetTransactionsAsync();
                 Transactions = new ObservableCollection<ITransaction>(transactionsRaw);
 
-                Transaction = Transactions.Where(t => t.Id == newId).FirstOrDefault();
+                Transaction = null;
 
                 ReloadEditor();
             }

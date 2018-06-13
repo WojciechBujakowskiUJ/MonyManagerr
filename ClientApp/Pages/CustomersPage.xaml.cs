@@ -452,7 +452,7 @@ namespace ClientApp.Pages
                 var customersRaw = await dbconn.CustomerService.GetCustomersAsync();
                 Customers = new ObservableCollection<ICustomer>(customersRaw);
 
-                Customer = Customers.Where(c => c.Id == newId).FirstOrDefault();
+                Customer = null;
 
                 ReloadEditor();
             }

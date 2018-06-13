@@ -438,7 +438,9 @@ namespace ClientApp.Pages
 
                 var transactionTypesRaw = await dbconn.TransactionTypeService.GetTransactionTypesAsync();
                 TransactionTypes = new ObservableCollection<ITransactionType>(transactionTypesRaw);
-                TransactionType = TransactionTypes.Where(tt => tt.Id == newId).FirstOrDefault();
+
+                TransactionType = null;
+
                 ReloadEditor();
             }
             catch (SqlException e)
