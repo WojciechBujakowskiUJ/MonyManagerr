@@ -1,11 +1,13 @@
 ﻿using DatabaseConnect;
 using Interfaces;
 using Interfaces.Implementation;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -334,6 +336,38 @@ namespace ClientApp.Pages
             }
         }
 
+        private ICommand _importCommand;
+        public ICommand ImportCommand
+        {
+            get
+            {
+                if (_importCommand == null)
+                {
+                    _importCommand = new RelayCommand<string>(
+                        param => Import(),
+                        param => AllowInput
+                    );
+                }
+                return _importCommand;
+            }
+        }
+
+        private ICommand _exportCommand;
+        public ICommand ExportCommand
+        {
+            get
+            {
+                if (_exportCommand == null)
+                {
+                    _exportCommand = new RelayCommand<string>(
+                        param => Export(),
+                        param => AllowInput
+                    );
+                }
+                return _exportCommand;
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -465,6 +499,92 @@ namespace ClientApp.Pages
             catch (Exception)
             {
                 MessageBox.Show("Unexpected error occurred while deleting entry in database", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                AllowInput = true;
+            }
+        }
+
+        private async void Import()
+        {
+            AllowInput = false;
+
+            try
+            {
+
+                OpenFileDialog ofd = new OpenFileDialog();
+                ofd.Filter = "JSON|*.json";
+                ofd.DefaultExt = "json";
+
+                if (ofd.ShowDialog() == true && ofd.CheckFileExists && ofd.CheckPathExists)
+                {
+                    var imported = FileExporter.FileExporter.ImportCustomer(ofd.FileName);
+
+                    IDatabaseService dbconn = new DatabaseService();
+                    dbconn.ConnectionString = ConnectionStringsProvider.Get();
+
+                    foreach (var entry in imported)
+                    {
+                        if (!Customers.Any(c => c.Name == entry.Name))
+                        {
+                            entry.Id = 0;
+                            await dbconn.CustomerService.SaveAsync(entry);
+                        }
+                    }
+
+                    var customersRaw = await dbconn.CustomerService.GetCustomersAsync();
+                    Customers = new ObservableCollection<ICustomer>(customersRaw);
+
+                    Customer = null;
+
+                    ReloadEditor();
+                }
+            }
+            catch (FileFormatException e)
+            {
+                MessageBox.Show("Invalid file format loaded. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show("Unexpected error occurred while loading JSON file. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (SqlException e)
+            {
+                MessageBox.Show("Unexpected SQL error occurred while saving imported entry in database. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unexpected error occurred while importing", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                AllowInput = true;
+            }
+        }
+
+        private void Export()
+        {
+            AllowInput = false;
+
+            try
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "JSON|*.json";
+                sfd.DefaultExt = "json";
+
+                if (sfd.ShowDialog() == true)
+                {
+                    FileExporter.FileExporter.ExportCustomer(sfd.FileName, Customers.Where(c => CustomersView.Filter(c)).ToList());
+                }
+            }
+            catch (IOException e)
+            {
+                MessageBox.Show("Unexpected error occurred while loading JSON file. Details:/n" + e.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unexpected error occurred while importing", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {

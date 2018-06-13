@@ -25,7 +25,7 @@ namespace FileExporter
         {
             return GetObjectFromFile<List<Customer>>(filePath);
         }
-        public static void ExportCustomer(string filePath, List<ICustomer> Customers)
+        public static void ExportCustomer(string filePath, IList<ICustomer> Customers)
         {
             File.WriteAllText(filePath, JsonConvert.SerializeObject(Customers));
         }
@@ -34,7 +34,7 @@ namespace FileExporter
         {
             return GetObjectFromFile<List<Transaction>>(filePath);
         }
-        public static void ExportTransaction(string filePath, List<Transaction> Transactions)
+        public static void ExportTransaction(string filePath, IList<ITransaction> Transactions)
         {
             File.WriteAllText(filePath, JsonConvert.SerializeObject(Transactions));
         }
@@ -43,7 +43,7 @@ namespace FileExporter
         {
             return GetObjectFromFile<List<TransactionType>>(filePath);
         }
-        public static void ExportTransactionType(string filePath, List<TransactionType> TransactionTypes)
+        public static void ExportTransactionType(string filePath, IList<ITransactionType> TransactionTypes)
         {
             File.WriteAllText(filePath, JsonConvert.SerializeObject(TransactionTypes));
         }

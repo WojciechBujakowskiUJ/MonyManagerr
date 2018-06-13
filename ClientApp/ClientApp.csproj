@@ -171,6 +171,10 @@
       <Project>{15e6ce4a-51af-4001-9082-23442b0499cc}</Project>
       <Name>DatabaseConnect</Name>
     </ProjectReference>
+    <ProjectReference Include="..\FileExporter\FileExporter.csproj">
+      <Project>{55221493-84af-493f-995d-c106828a9a58}</Project>
+      <Name>FileExporter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Interfaces\Interfaces.csproj">
       <Project>{d19666cb-ef27-458c-8211-9937f4744ccb}</Project>
       <Name>Interfaces</Name>
